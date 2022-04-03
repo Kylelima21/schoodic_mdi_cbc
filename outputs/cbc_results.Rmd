@@ -1,0 +1,212 @@
+---
+title: "Acadia National Park Region CBC Results"
+author: "Kyle Lima"
+date: "4/3/2022"
+output:
+  html_document:
+    theme: readable
+  
+---
+
+```{r setup, include=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(utils)
+library(tidyr)
+library(sp)
+library(ggmap)
+library(rgdal)
+library(cowplot)
+
+select <- dplyr::select
+
+
+cbc <- read.csv("cbc_alldata_20220403.csv")
+buff1 <- readOGR("mdi_circle.kml")
+buff2 <- readOGR("sch_circle.kml")
+
+
+#Draw images
+cbirds <- ggdraw() +
+  draw_image("regional/aa_CumulativeBirds.png")
+phours <- ggdraw() +
+  draw_image("regional/aa_PartyHours.png")
+yso <- ggdraw() +
+  draw_image("regional/aa_YearsSpeciesObserved.png")
+
+
+T1.1 <- cbc %>% 
+  filter(cbc$Count > 0)
+T2.0 <- T1.1 %>%
+  group_by(CommonName, Year) %>% 
+  summarise(Count=sum(Count),
+            CountPartyHour=sum(CountPartyHour),
+            PartyHours=sum(PartyHours))
+T2 <- T2.0 %>% 
+  group_by(Year) %>%
+  summarise(NoSpecies=length(CommonName),
+            Birds=sum(Count),
+            BirdsPartyHour=sum(CountPartyHour),
+            PartyHours=mean(PartyHours))
+F1 <- T1.1 %>% 
+  group_by(CommonName) %>% 
+  summarise(Freq=length(Year),
+            TotalBirds=sum(Count),
+            TotBirdsPH=sum(CountPartyHour),
+            MinYear=min(Year),
+            MaxYear=max(Year))
+
+```
+
+
+## Summary Statistics
+
+53% decline in total count of birds recorded on the CBCs since 1971. 
+
+
+<br>
+<br>
+
+
+## CBC Circles
+```{r, fig.height = 8, fig.width = 8, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+##Map
+#Create dataframe with circle centers
+circpoint <- data.frame(circle  = c("Mount Desert Island center", "Schoodic center"),
+                        latitude = c("44.34", "44.43"),
+                        longitude = c("-68.31", "-68.11"))
+
+#Fix non-numeric
+circpoint$latitude <- as.numeric(circpoint$latitude)
+circpoint$longitude <- as.numeric(circpoint$longitude)
+
+#Fortify for ggplot
+buff1f <- fortify(buff1)
+buff2f <- fortify(buff2)
+
+#Get base map
+base.map <- get_stamenmap(
+  bbox = c(left = -68.61, bottom = 44.15, right = -67.83, top = 44.6),
+  maptype = 'toner-lite',
+  zoom = 11)
+
+#Plot
+ggmap(base.map) +
+  geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
+             shape = 21,
+             size = 2.5,
+             color = 'black') +
+  geom_path(data = buff1f, aes(x=long, y=lat), color = "navyblue") +
+  geom_path(data = buff2f, aes(x=long, y=lat), color = "forestgreen") +
+  theme_classic(base_size = 14) +
+  ggtitle("Christmas Bird Count Circles") +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.79, 0.13),
+        legend.background = element_rect(fill = "white", color = "black"),
+        panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
+  scale_fill_manual("CBC circle", values = c("navyblue", "forestgreen"))
+
+```
+<br>
+<br>
+
+
+
+## Linear Relationships
+
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+T2 %>% 
+  ggplot(aes(Year, NoSpecies)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "navyblue") +
+  theme_bw() +
+  labs(title="Number of Species by Year", y="Number of species", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA))
+
+```
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+T2 %>% 
+  ggplot(aes(Year, Birds)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
+  theme_bw() +
+  labs(title="Total Count of Birds by Year", y="Tatal count", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(5000,35000)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA))
+
+```
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+T2 %>% 
+  ggplot(aes(Year, BirdsPartyHour)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
+  theme_bw() +
+  labs(title="Number of Birds/Party Hour by Year", y="Number of birds", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(100,1150)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA))
+
+```
+<br>
+
+
+## Additional Figures
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+plot(phours)
+
+```
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+plot(yso)
+
+```
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+plot(cbirds)
+
+```
+
+
+
+
+
+

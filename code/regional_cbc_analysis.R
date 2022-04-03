@@ -41,7 +41,7 @@ sch <- sch %>%
 
 cbc <- bind_rows(mdi, sch)
 
-
+write.csv(cbc, "outputs/cbc_alldata_20220403.csv", row.names = F)
 
 #no. of species, no. of birds, birds sum by party hours,  
 #party hours, observers
@@ -254,8 +254,8 @@ circpoint$latitude <- as.numeric(circpoint$latitude)
 circpoint$longitude <- as.numeric(circpoint$longitude)
 
 #Read in CBC Circles
-buff1 <- readOGR("data/mdi_circle.kml")
-buff2 <- readOGR("data/sch_circle.kml")
+buff1 <- readOGR("outputs/mdi_circle.kml")
+buff2 <- readOGR("outputs/sch_circle.kml")
 
 #Fortify for ggplot
 buff1f <- fortify(buff1)
@@ -360,7 +360,7 @@ par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1)
 plot(T2$Year, T2$PartyHours,
      pch=16, cex=0.5,
      xlab="Year", ylab="PartyHours",
-     main="Party hours per year")
+     main="Party Hours per Year")
 lines(T2$Year, T2$PartyHours)
 
 dev.off()
@@ -412,7 +412,7 @@ par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1)
 plot(T3.2$Year, T3.2$cumsum,
      pch=16, cex=0.5,
      xlab="Year", ylab="Cumulative species",
-     main="Cumulative bird species")
+     main="Cumulative Bird Species")
 lines(T3.2$Year, T3.2$cumsum)
 
 dev.off()
@@ -452,7 +452,7 @@ for (i in 1:length(up)) {
   plot(T1.1$Year, T1.1$Count,
        axes=F, xlab=NA, ylab=NA, 
        pch=16, cex=0.2, col="red")
-  lines(T1.1$Year, T1.1$Count, col="red", lwd=0.7)
+  lines(T1.1$Year, T1.1$Count, col="red", lwd=0.8)
   axis(side = 4, col="red", col.axis="red", col.lab="red")
   mtext(side = 4, line = 1.5, 'Number of birds', col="red")
   
