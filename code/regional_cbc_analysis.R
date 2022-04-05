@@ -465,4 +465,37 @@ for (i in 1:length(up)) {
 #end of loop
 
 
+ATSP <- T1 %>% 
+  filter(CommonName=="American Tree Sparrow") %>% 
+  mutate(t.count = Count/20)
 
+
+
+ggplot(ATSP, aes(x=Year)) +
+  geom_line(aes(y=CountPartyHour, color="Count/party hour"), size = 1.3) +
+  geom_line(aes(y=t.count, color="Count"), size = 1.3) +
+  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*20, name="Count")) +
+  theme_bw() +
+  labs(title="American Tree Sparrow Population Changes Through Time", x="Year") +
+  theme(plot.title = element_text(hjust = 0.5, size = "20"),
+        axis.text = element_text(color = "black", size = "12"),
+        axis.title = element_text(size = "16"),
+        axis.line.y.right = element_line(color = "#2166AC"), 
+        axis.ticks.y.right = element_line(color = "#2166AC"),
+        axis.text.y.right = element_text(color = "#2166AC"), 
+        axis.title.y.right = element_text(color = "#2166AC"),
+        axis.line.y.left = element_line(color = "#D6604D"), 
+        axis.ticks.y.left = element_line(color = "#D6604D"),
+        axis.text.y.left = element_text(color = "#D6604D"), 
+        axis.title.y.left = element_text(color = "#D6604D"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "13"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        panel.border = element_rect(color = 'black', fill = NA),
+        legend.title = element_text(size=18),
+        legend.text = element_text(size=16)) +
+  scale_color_manual(name="Statistic",
+                     breaks=c("Count/party hour", "Count"),
+                     values=c("Count/party hour"="#D6604D", "Count"="#2166AC"))
