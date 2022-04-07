@@ -25,6 +25,8 @@ select <- dplyr::select
 cbc <- read.csv("cbc_alldata_20220403.csv")
 buff1 <- readOGR("mdi_circle.kml")
 buff2 <- readOGR("sch_circle.kml")
+sp.tab <- read.csv("regional/speciesstats_table.csv")
+
 
 
 #Draw images
@@ -36,33 +38,33 @@ yso <- ggdraw() +
   draw_image("regional/aa_YearsSpeciesObserved.png")
 
 
-T1.1 <- cbc %>% 
-  filter(cbc$Count > 0)
-T2.0 <- T1.1 %>%
+T2.0 <- cbc %>%
   group_by(CommonName, Year) %>% 
-  summarise(Count=sum(Count),
-            CountPartyHour=sum(CountPartyHour),
-            PartyHours=sum(PartyHours))
+  summarise(Count=sum(Count), PartyHours=sum(PartyHours)) %>% 
+  mutate(CountPartyHour = Count/PartyHours)
+
 T2 <- T2.0 %>% 
   group_by(Year) %>%
-  summarise(NoSpecies=length(CommonName),
+  summarise(NoSpecies=length(which(Count>0)),
             Birds=sum(Count),
             BirdsPartyHour=sum(CountPartyHour),
             PartyHours=mean(PartyHours))
-F1 <- T1.1 %>% 
+F1.0 <- T2.0 %>%
+  filter(Count > 0)
+
+F1 <- F1.0 %>% 
   group_by(CommonName) %>% 
   summarise(Freq=length(Year),
             TotalBirds=sum(Count),
             TotBirdsPH=sum(CountPartyHour),
             MinYear=min(Year),
             MaxYear=max(Year))
-
 ```
 
 
 ## Summary Statistics
 
-53% decline in total count of birds recorded on the CBCs since 1971. 
+53% decline in total count of birds recorded on the CBCs since 1971. 43% decline in count of birds per party hour since 1971.
 
 
 <br>
@@ -120,6 +122,8 @@ ggmap(base.map) +
 ## Linear Relationships Through Time
 
 <br>
+
+Adjusted R-squared:  0.1543, F-statistic: 10.12 on 1 and 49 DF,  p-value: < 0.005
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 
 T2 %>% 
@@ -142,6 +146,8 @@ T2 %>%
 
 ```
 <br>
+
+Adjusted R-squared:  0.4095, F-statistic: 35.68 on 1 and 49 DF,  p-value: < 0.005
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 
 T2 %>% 
@@ -164,6 +170,8 @@ T2 %>%
 
 ```
 <br>
+
+Adjusted R-squared:  0.02729, F-statistic: 2.403 on 1 and 49 DF,  p-value: 0.1276
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 
 T2 %>% 
@@ -172,7 +180,7 @@ T2 %>%
   geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
   theme_bw() +
   labs(title="Number of Birds/Party Hour by Year", y="Number of birds/party hour", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(100,1150)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(0,550)) +
   theme(plot.title = element_text(hjust = 0.5, size = 18), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 14),
@@ -214,23 +222,38 @@ plot(cbirds)
 
 ## Increasing Species
 
-Bald Eagle, Harlequin Duck, Mallard, Northern Cardinal
+Top 5 in descending order of severity:
+
+1. Mallard
+2. Wild Turkey
+3. Bald Eagle
+4. Northern Cardinal
+5. Harlequin Duck
+
 
 <br>
 
 ## Species showing no change
 
-Dark-eyed Junco, Red-breasted Merganser, Red-breasted Nuthatch, Hairy Woodpecker, Song Sparrow
+- Brown Creeper
+- Dark-eyed Junco
+- American Robin
+- Red-breasted Nuthatch
+- Song Sparrow
 
 <br>
 
 ## Decreasing Species
 
-Common Raven, American Black Duck, American Tree Sparrow, Brown-headed Cowbird, White-winged Scoter
+Top 5 in descending order of severity:
 
-Gulls: Herring Gull, Great Black-backed Gull
+1. Evening Grosbeak
+2. American Tree Sparrow
+3. Brown-headed Cowbird
+4. White-winged Scoter
+5. Blue Jay
 
-Boreal species: Boreal Chickadee, Canada Jay, Spruce Grouse
+
 
 <br>
 <br>
@@ -238,27 +261,27 @@ Boreal species: Boreal Chickadee, Canada Jay, Spruce Grouse
 
 
 ## Example plot
-
+<br>
 ```{r, fig.height = 7, fig.width = 9, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
 
 ATSP <- cbc %>% 
   filter(CommonName=="American Tree Sparrow") %>% 
-  mutate(t.count = Count/20)
+  mutate(t.count = Count/60)
 
 ggplot(ATSP, aes(x=Year)) +
-  geom_line(aes(y=t.count, color="Count"), size = 1.3) +
+    geom_line(aes(y=t.count, color="Count"), size = 1.3) +
   geom_line(aes(y=CountPartyHour, color="Count/party hour"), size = 1.3) +
-  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*20, name="Count")) +
+  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*60, name="Count")) +
   theme_bw() +
   labs(title="American Tree Sparrow Population Changes Through Time", x="Year") +
-  theme(plot.title = element_text(size = 17),
+  theme(plot.title = element_text(hjust = 0.5, size = "20"),
         axis.text = element_text(color = "black", size = "12"),
         axis.title = element_text(size = "16"),
-        axis.line.y.right = element_line(color = "#2166AC"), 
+        axis.line.y.right = element_line(color = "#2166AC", size = 1.2), 
         axis.ticks.y.right = element_line(color = "#2166AC"),
         axis.text.y.right = element_text(color = "#2166AC"), 
         axis.title.y.right = element_text(color = "#2166AC"),
-        axis.line.y.left = element_line(color = "#D6604D"), 
+        axis.line.y.left = element_line(color = "#D6604D", size = 1.2), 
         axis.ticks.y.left = element_line(color = "#D6604D"),
         axis.text.y.left = element_text(color = "#D6604D"), 
         axis.title.y.left = element_text(color = "#D6604D"),
@@ -267,9 +290,9 @@ ggplot(ATSP, aes(x=Year)) +
         panel.background = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(), 
-        panel.border = element_rect(color = 'black', fill = NA),
-        legend.title = element_text(size=15),
-        legend.text = element_text(size=13)) +
+        panel.border = element_rect(color = 'black', fill = NA, size = 1),
+        legend.title = element_text(size=18),
+        legend.text = element_text(size=16)) +
   scale_color_manual(name="Statistic",
                      breaks=c("Count/party hour", "Count"),
                      values=c("Count/party hour"="#D6604D", "Count"="#2166AC"))
@@ -280,3 +303,19 @@ ggplot(ATSP, aes(x=Year)) +
 
 
 
+## Species Trend Table
+
+The species trend is based soley on the count/party hour estimate and p-value. There are a lot more determinable trends in the count data, but I think we want to use the count/party hour metric to account for effort.
+
+There are `r length(which(sp.tab$change=="increase"))` increasing species, `r length(which(sp.tab$change=="decrease"))` decreasing species, and `r length(which(sp.tab$change=="no change"))` that have shown no change over the last 51 years. The other `r length(which(sp.tab$change=="not enough data"))` species did not have enough data to determine a trend, beacuse they are rarely detected species (vagrants, unusual overwinterers, or irruptive species). 
+
+<br>
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.align='center'}
+
+sp.tab['species'][sp.tab['species'] == "Gray Jay"] <- 'Canada Jay'
+
+knitr::kable(sp.tab, col.names = c('Species', 'Count estimate', 'Count p-value', 'Count/party hour estimate', 'Count/party hour p-value', 'Species trend'))
+
+```
+<br>
+<br>

@@ -12,6 +12,7 @@ library(tidyr)
 library(sp)
 library(ggmap)
 library(rgdal)
+library(reshape2)
 
 select <- dplyr::select
 
@@ -32,6 +33,7 @@ Y1 <- read.csv('data/Years_MDI.csv', header=TRUE) #this starts with 1971
 ####          Combine mdi and sch             ####
 #------------------------------------------------#
 
+#Get separate data ready for join
 mdi <- mdi %>% 
   mutate(circle = "mdi") %>% 
   rename(SciName = SciName2)
@@ -39,32 +41,84 @@ mdi <- mdi %>%
 sch <- sch %>% 
   mutate(circle = "schoodic")
 
+#Combine for regional analysis
 cbc <- bind_rows(mdi, sch)
 
-write.csv(cbc, "outputs/cbc_alldata_20220403.csv", row.names = F)
+#Do calculations
+T2.0 <- cbc %>%
+  group_by(CommonName, Year) %>% 
+  summarise(Count=sum(Count), PartyHours=sum(PartyHours)) %>% 
+  mutate(CountPartyHour = Count/PartyHours)
+  
+#Fill in missing years with zero
+sp.list <- unique(cbc$CommonName)
+
+Year <- 1971:2021
+
+PartyHours <- c(74.00, 107.00, 90.00, 99.00, 74.00, 148.50, 143.00, 146.00, 146.50,
+                                          148.00, 160.50, 123.80, 145.50, 82.00, 73.00, 106.50, 73.00, 93.00, 
+                                          60.00, 82.00, 94.00, 100.00, 90.00, 65.00, 71.00, 107.25, 101.00, 
+                                          80.75, 61.75, 57.50, 32.00, 83.30, 94.25, 58.00, 50.50, 103.25, 71.75,
+                                          60.00, 71.25, 92.25, 91.85, 89.00, 85.35, 105.00, 113.35, 55.95, 81.24,
+                                          76.90, 88.93, 114.31, 112.40)
+
+all.bird.data <- as.data.frame(cbind(Year, PartyHours))
+
+#all.years$Year <- as.character(all.years$Year)
+
+add.zero <- function(spname) {
+  
+  sp <- T2.0 %>% 
+    filter(CommonName == paste(spname))
+  
+  #sp$Year <- as.character(sp$Year)
+  
+  withzed <- full_join(sp, all.bird.data, by = "Year") %>% 
+    select(-PartyHours.x) %>% 
+    rename(PartyHours=PartyHours.y)
+  
+  withzed$CommonName <- paste(spname)
+  
+  output <- withzed %>% 
+    mutate_all(~replace(., is.na(.), 0))
+  
+  
+  return(output)
+  
+}
+
+
+fulldat <- map(sp.list, ~add.zero(.))
+
+sp.full <- as.data.frame(do.call(rbind, fulldat))
+
+#write.csv(sp.full, "outputs/cbc_alldata_20220403.csv", row.names = F)
 
 #no. of species, no. of birds, birds sum by party hours,  
 #party hours, observers
 #remove zeros
-T1.1 <- cbc %>% 
-  filter(cbc$Count > 0)
+# T1.1 <- cbc %>% 
+#   filter(cbc$Count > 0)
 
 #Do calculations
-T2.0 <- T1.1 %>%
-  group_by(CommonName, Year) %>% 
-  summarise(Count=sum(Count),
-            CountPartyHour=sum(CountPartyHour),
-            PartyHours=sum(PartyHours))
- 
+# T2.0 <- sp.full %>%
+#   group_by(CommonName, Year) %>% 
+#   summarise(Count=sum(Count), PartyHours=sum(PartyHours)) %>% 
+#   mutate(CountPartyHour = Count/PartyHours)
+
 T2 <- T2.0 %>% 
   group_by(Year) %>%
-  summarise(NoSpecies=length(CommonName),
+  summarise(NoSpecies=length(which(Count>0)),
             Birds=sum(Count),
             BirdsPartyHour=sum(CountPartyHour),
             PartyHours=mean(PartyHours))
 
 #Frequency of years species is present
-F1 <- T1.1 %>% 
+#remove zeros
+F1.0 <- T2.0 %>%
+  filter(Count > 0)
+
+F1 <- F1.0 %>% 
   group_by(CommonName) %>% 
   summarise(Freq=length(Year),
             TotalBirds=sum(Count),
@@ -84,7 +138,7 @@ F1 <- T1.1 %>%
 cor(T2$Year, T2$NoSpecies, method="spearman")
 cor.test(T2$Year, T2$NoSpecies, method="spearman")
 #S = 31892, p-value = 0.001129**
-#rho = -0.44309 
+#rho = -0.44309
 
 m.NoSpecies <- lm(NoSpecies~Year, data=T2)
 summary(m.NoSpecies) #Adjusted R-squared:  0.1543, F-statistic: 10.12 on 1 and 49 DF,  p-value: 0.002546**
@@ -165,16 +219,17 @@ T2 %>%
 
 cor(T2$Year, T2$BirdsPartyHour, method="spearman")
 cor.test(T2$Year, T2$BirdsPartyHour, method="spearman")
-#S = 33362, p-value = 0.0001649
-#rho = -0.5095928 
+#S = 30334, p-value = 0.007416
+#rho = -0.3725792 
 
 m.BirdsPartyHour <- lm(BirdsPartyHour~Year, data=T2)
-summary(m.BirdsPartyHour) #Adjusted R-squared:  0.1377, F-statistic: 8.981 on 1 and 49 DF,  p-value: 0.004273**
+summary(m.BirdsPartyHour) #Adjusted R-squared:  0.02729, F-statistic: 2.403 on 1 and 49 DF,  p-value: 0.1276
+
 summary(T2$BirdsPartyHour)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#126.1   270.3   335.5   364.9   426.5  1129.1 
+#61.99  122.69  148.70  171.54  194.75  514.75 
 
-sd(T2$BirdsPartyHour) #171.8493
+sd(T2$BirdsPartyHour) #82.00933
 
 # #math determining percent decline from linear model
 # 8670.473+1969*-4.241 #319.944
@@ -183,7 +238,7 @@ sd(T2$BirdsPartyHour) #171.8493
 
 #math determining percent decline from 10 year averages
 100-(sum(T2$BirdsPartyHour[T2$Year>2011])/sum(T2$BirdsPartyHour[T2$Year<1981]))*100
-#52.06% decline
+#43.02% decline
 
 T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
@@ -191,7 +246,7 @@ T2 %>%
   geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
   theme_bw() +
   labs(title="Number of Birds by Year", y="Number of birds", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(100,1150)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,550)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black"),
@@ -236,6 +291,81 @@ T3.2$cumsum <- cumsum(T3.2$NewSpecies)
 sum(T3.2$NewSpecies[T3.2$Year > 2010]) #10
 sum(T3.2$NewSpecies[T3.2$Year > 2000]) #16
 sum(T3.2$NewSpecies[T3.2$Year > 1990]) #22
+
+
+#------------------------------------------------#
+
+
+#statistical tests for each species
+
+# sp.stat <- data.frame(species  = NA,
+#                       count.est = NA,
+#                       count.p = NA,
+#                       cph.est = NA,
+#                       cph.p = NA)
+
+fsub <- F1 %>% 
+  filter(Freq > 2)
+
+species <- unique(fsub$CommonName) 
+#species <- unique(T2.0$CommonName) 
+
+sprmn <- function(spname) {
+  sp <- T2.0 %>% 
+    filter(CommonName == paste(spname))
+  
+  c <- cor.test(sp$Year, sp$Count, method = "spearman")
+  
+  cph <- cor.test(sp$Year, sp$CountPartyHour, method = "spearman")
+  
+  newrow <- c(paste(spname), paste(c$estimate), paste(c$p.value), paste(cph$estimate), paste(cph$p.value))
+  
+  return(newrow)
+  
+}
+
+
+output <- map(species, ~sprmn(.))
+
+sp.stats <- as.data.frame(do.call(rbind, output))
+
+colnames(sp.stats) <- c("species", "count.est", "count.p", "cph.est", "cph.p")
+
+
+sp.stats$count.est <- round(as.numeric(sp.stats$count.est), digits = 3)
+sp.stats$count.p <- round(as.numeric(sp.stats$count.p), digits = 3)
+sp.stats$cph.est <- round(as.numeric(sp.stats$cph.est), digits = 3)
+sp.stats$cph.p <- round(as.numeric(sp.stats$cph.p), digits = 3)
+
+
+sig <- sp.stats %>% 
+  filter(cph.p < 0.05)
+
+sig$change <- ifelse(sig$cph.est > 0, "increase", "decrease")
+sig.ch <- sig %>% select(species, change)
+
+sp.stats2 <- left_join(sp.stats, sig.ch, by = "species")
+
+sp.stats2$change[is.na(sp.stats2$change)] <- "no change"
+sp.stats2$change[is.na(sp.stats2$count.p)] <- "not enough data"
+
+
+fmis <- F1 %>% 
+  filter(Freq <= 2) %>% 
+  mutate(count.est = NA,
+         count.p = NA,
+         cph.est = NA,
+         cph.p = NA,
+         change = "not enough data") %>% 
+  select(CommonName, count.est, count.p, cph.est, cph.p, change) %>% 
+  rename(species=CommonName)
+
+sp.stats3 <- bind_rows(sp.stats2, fmis)
+
+sp.stats3 <- sp.stats3 %>% arrange(change, species)
+
+#write.csv(sp.stats3, "outputs/regional/speciesstats_table.csv", row.names = F)
+
 
 
 
@@ -467,14 +597,14 @@ for (i in 1:length(up)) {
 
 ATSP <- T1 %>% 
   filter(CommonName=="American Tree Sparrow") %>% 
-  mutate(t.count = Count/20)
+  mutate(t.count = Count/60)
 
 
 
 ggplot(ATSP, aes(x=Year)) +
   geom_line(aes(y=CountPartyHour, color="Count/party hour"), size = 1.3) +
   geom_line(aes(y=t.count, color="Count"), size = 1.3) +
-  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*20, name="Count")) +
+  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*60, name="Count")) +
   theme_bw() +
   labs(title="American Tree Sparrow Population Changes Through Time", x="Year") +
   theme(plot.title = element_text(hjust = 0.5, size = "20"),
