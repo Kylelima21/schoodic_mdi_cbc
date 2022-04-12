@@ -274,7 +274,7 @@ ggplot(ATSP, aes(x=Year)) +
   scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*60, name="Count")) +
   theme_bw() +
   labs(title="American Tree Sparrow Population Changes Through Time", x="Year") +
-  theme(plot.title = element_text(hjust = 0.5, size = "20"),
+  theme(plot.title = element_text(size = "18"),
         axis.text = element_text(color = "black", size = "12"),
         axis.title = element_text(size = "16"),
         axis.line.y.right = element_line(color = "#2166AC", size = 1.2), 
