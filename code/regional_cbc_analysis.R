@@ -13,6 +13,8 @@ library(sp)
 library(ggmap)
 library(rgdal)
 library(reshape2)
+library(purrr)
+library(sf)
 
 select <- dplyr::select
 
@@ -44,27 +46,34 @@ sch <- sch %>%
 #Combine for regional analysis
 cbc <- bind_rows(mdi, sch)
 
-#Do calculations
-T2.0 <- cbc %>%
+
+##Do calculations
+#Get mean count and party h
+metr <- cbc %>%
   group_by(CommonName, Year) %>% 
-  summarise(Count=sum(Count), PartyHours=sum(PartyHours)) %>% 
+  summarise(Count=mean(Count), PartyH=mean(PartyHours)) 
+
+#Party h is not correct for species only detected in one circle that year, fix
+yh <- metr %>% 
+  group_by(Year) %>% 
+  summarise(PartyHours = median(PartyH))
+
+#Combine new party hours that are right
+newjoin <- left_join(metr, yh) %>% 
+  select(-PartyH)
+
+#Calculate countpartyhour
+T2.0 <- newjoin %>% 
   mutate(CountPartyHour = Count/PartyHours)
   
 #Fill in missing years with zero
 sp.list <- unique(cbc$CommonName)
 
-Year <- 1971:2021
 
-PartyHours <- c(74.00, 107.00, 90.00, 99.00, 74.00, 148.50, 143.00, 146.00, 146.50,
-                                          148.00, 160.50, 123.80, 145.50, 82.00, 73.00, 106.50, 73.00, 93.00, 
-                                          60.00, 82.00, 94.00, 100.00, 90.00, 65.00, 71.00, 107.25, 101.00, 
-                                          80.75, 61.75, 57.50, 32.00, 83.30, 94.25, 58.00, 50.50, 103.25, 71.75,
-                                          60.00, 71.25, 92.25, 91.85, 89.00, 85.35, 105.00, 113.35, 55.95, 81.24,
-                                          76.90, 88.93, 114.31, 112.40)
+all.bird.data <- T2.0 %>% 
+  group_by(Year) %>% 
+  summarise(PartyHours = median(PartyHours))
 
-all.bird.data <- as.data.frame(cbind(Year, PartyHours))
-
-#all.years$Year <- as.character(all.years$Year)
 
 add.zero <- function(spname) {
   
@@ -92,20 +101,15 @@ fulldat <- map(sp.list, ~add.zero(.))
 
 sp.full <- as.data.frame(do.call(rbind, fulldat))
 
-#write.csv(sp.full, "outputs/cbc_alldata_20220403.csv", row.names = F)
+#write.csv(sp.full, "outputs/cbc_alldata_20220415.csv", row.names = F)
 
 #no. of species, no. of birds, birds sum by party hours,  
 #party hours, observers
 #remove zeros
-# T1.1 <- cbc %>% 
-#   filter(cbc$Count > 0)
+T1.1 <- T2.0 %>%
+  filter(Count > 0)
 
-#Do calculations
-# T2.0 <- sp.full %>%
-#   group_by(CommonName, Year) %>% 
-#   summarise(Count=sum(Count), PartyHours=sum(PartyHours)) %>% 
-#   mutate(CountPartyHour = Count/PartyHours)
-
+#For species number based calcs
 T2 <- T2.0 %>% 
   group_by(Year) %>%
   summarise(NoSpecies=length(which(Count>0)),
@@ -177,12 +181,12 @@ cor.test(T2$Year, T2$Birds, method="spearman")
 #rho = -0.7482353 
 
 m.Birds <- lm(Birds~Year, data=T2)
-summary(m.Birds) #Adjusted R-squared:  0.4095, F-statistic: 35.68 on 1 and 49 DF,  p-value: 2.574e-07***
+summary(m.Birds) #Adjusted R-squared:  0.3565, F-statistic:  28.7 on 1 and 49 DF,  p-value: 2.25e-06***
 summary(T2$Birds) 
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#5513   11340   13898   14653   17133   33459 
+#2756    5672    7422    7452    8775   16730 
 
-sd(T2$Birds) #4997
+sd(T2$Birds) #2596.276
 
 # #math determining percent decline from linear model
 # 129012.39+1971*-61.87 #7066.62
@@ -191,7 +195,7 @@ sd(T2$Birds) #4997
 
 #math determining percent decline from 10 year averages
 100-(sum(T2$Birds[T2$Year>2011])/sum(T2$Birds[T2$Year<1981]))*100
-#53.11% decline
+#53.03% decline
 
 
 T2 %>% 
@@ -223,13 +227,13 @@ cor.test(T2$Year, T2$BirdsPartyHour, method="spearman")
 #rho = -0.3725792 
 
 m.BirdsPartyHour <- lm(BirdsPartyHour~Year, data=T2)
-summary(m.BirdsPartyHour) #Adjusted R-squared:  0.02729, F-statistic: 2.403 on 1 and 49 DF,  p-value: 0.1276
+summary(m.BirdsPartyHour) #Adjusted R-squared:  0.02728, F-statistic: 2.402 on 1 and 49 DF,  p-value: 0.1276
 
 summary(T2$BirdsPartyHour)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #61.99  122.69  148.70  171.54  194.75  514.75 
 
-sd(T2$BirdsPartyHour) #82.00933
+sd(T2$BirdsPartyHour) #82.00265
 
 # #math determining percent decline from linear model
 # 8670.473+1969*-4.241 #319.944
@@ -238,7 +242,7 @@ sd(T2$BirdsPartyHour) #82.00933
 
 #math determining percent decline from 10 year averages
 100-(sum(T2$BirdsPartyHour[T2$Year>2011])/sum(T2$BirdsPartyHour[T2$Year<1981]))*100
-#43.02% decline
+#43.01% decline
 
 T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
@@ -288,9 +292,11 @@ T3.2[is.na(T3.2)] <- 0
 str(T3.2)
 T3.2$cumsum <- cumsum(T3.2$NewSpecies)
 
-sum(T3.2$NewSpecies[T3.2$Year > 2010]) #10
-sum(T3.2$NewSpecies[T3.2$Year > 2000]) #16
-sum(T3.2$NewSpecies[T3.2$Year > 1990]) #22
+sum(T3.2$NewSpecies[T3.2$Year >= 2011 & T3.2$Year <= 2020]) #10
+sum(T3.2$NewSpecies[T3.2$Year >= 2001 & T3.2$Year <= 2010]) #6
+sum(T3.2$NewSpecies[T3.2$Year >= 1991 & T3.2$Year <= 2000]) #6
+#sum(T3.2$NewSpecies[T3.2$Year > 1980 & T3.2$Year < 1991]) #15
+#sum(T3.2$NewSpecies[T3.2$Year > 1970 & T3.2$Year < 1981]) #124
 
 
 #------------------------------------------------#
@@ -364,7 +370,7 @@ sp.stats3 <- bind_rows(sp.stats2, fmis)
 
 sp.stats3 <- sp.stats3 %>% arrange(change, species)
 
-#write.csv(sp.stats3, "outputs/regional/speciesstats_table.csv", row.names = F)
+#write.csv(sp.stats3, "outputs/regional/speciesstats_table_20220415.csv", row.names = F)
 
 
 
@@ -391,6 +397,27 @@ buff2 <- readOGR("outputs/sch_circle.kml")
 buff1f <- fortify(buff1)
 buff2f <- fortify(buff2)
 
+#This section removes the sch data that overlapped with the MDI circle
+sf_buff1 <- st_as_sf(buff1)
+sf_buff1_polygons <- st_polygonize(sf_buff1)
+shp_buff1 <- as(sf_buff1_polygons, "Spatial")
+
+buff2f$longitude <- buff2f$"long"
+buff2f$latitude <- buff2f$"lat"
+
+coordinates(buff2f) <- c("long", "lat")
+
+slot(buff2f, "proj4string") <- slot(shp_buff1, "proj4string")
+
+output <- over(shp_buff1, buff2f, returnList = TRUE) 
+
+output.df <- as.data.frame(output$`0`) #need to remove rows 14:29
+
+buff2.0 <- fortify(buff2)
+
+buff2.0[c(14:29),] <- NA
+
+
 #Get base map
 base.map <- get_stamenmap(
   bbox = c(left = -68.61, bottom = 44.15, right = -67.83, top = 44.6),
@@ -404,7 +431,7 @@ ggmap(base.map) +
              size = 2.5,
              color = 'black') +
   geom_path(data = buff1f, aes(x=long, y=lat), color = "navyblue") +
-  geom_path(data = buff2f, aes(x=long, y=lat), color = "forestgreen") +
+  geom_path(data = buff2.0, aes(x=long, y=lat), color = "forestgreen") +
   theme_classic(base_size = 14) +
   ggtitle("Christmas Bird Count Circles") +
   theme(plot.title = element_text(hjust = 0.5),
@@ -494,6 +521,7 @@ plot(T2$Year, T2$PartyHours,
 lines(T2$Year, T2$PartyHours)
 
 dev.off()
+
 
 
 
