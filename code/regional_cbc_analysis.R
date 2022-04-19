@@ -205,7 +205,7 @@ T2 %>%
 
 #Spearman rank correlation test
 cor(T2$Year, T2$Birds, method="spearman")
-test <- cor.test(T2$Year, T2$Birds, method="spearman")
+cor.test(T2$Year, T2$Birds, method="spearman")
 #S = 38636, p-value < 2.2e-16***
 #rho = -0.7482353 
 

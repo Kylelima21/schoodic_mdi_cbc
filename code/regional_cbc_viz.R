@@ -80,20 +80,6 @@ F1 <- T2.0 %>%
             MaxYear=max(Year))
 F1$TotBirdsPH <- round(F1$TotBirdsPH, digits = 3)
 
-#Get only those species seen all 51 years
-sub.frq <- F1 %>% 
-  arrange(desc(Freq)) %>% 
-  filter(Freq == 51) %>% 
-  select(CommonName, Freq) %>% 
-  rename(species=CommonName)
-
-#Pull the species trend data from the table
-sp.tr <- sp.tab %>% 
-  select(species, change)
-
-#Join this so that we have the trend for the species seen all 51 years
-frgq <- left_join(sub.frq, sp.tr, by = "species")
-
 
 
 #------------------------------------------------#
@@ -158,7 +144,8 @@ ggmap(base.map) +
         legend.position = c(0.79, 0.13),
         legend.background = element_rect(fill = "white", color = "black"),
         panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
-  scale_fill_manual("CBC circle", values = c("navyblue", "forestgreen"))
+  scale_fill_manual("CBC circle", values = c("navyblue", "forestgreen")) +
+  ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
 
 dev.off()
 
@@ -370,14 +357,14 @@ dev.off()
 ####             SRC Test Plots               ####
 #------------------------------------------------#
 
-test <- T2 %>% 
+rm.out <- T2 %>% 
   filter(Year!=2001)
 
 ##Number of species by Year
 png(filename = "outputs/regional/forpub/spbyyear.png",
     width=8.5, height=6, units="in", res = 600)
 
-ggscatterstats(data = test, x = Year, y = NoSpecies, 
+ggscatterstats(data = rm.out, x = Year, y = NoSpecies, 
                type = "spearman",
                title = "Number of species by year",
                ylab = "No. of species",
@@ -408,7 +395,7 @@ png(filename = "outputs/regional/forpub/birdspartyhour_byyear.png",
 ggscatterstats(data = T2, x = Year, y = BirdsPartyHour, 
                type = "spearman",
                title = "Total count of birds/party hour by year",
-               ylab = "Birds/party hour",
+               ylab = "Total count/party hour",
                ggtheme = theme_classic())
 
 dev.off()
@@ -507,6 +494,20 @@ ggplot(ATSP, aes(x=Year)) +
 
 
 ##Table of the species seen all 51 years
+#Get only those species seen all 51 years
+sub.frq <- F1 %>% 
+  arrange(desc(Freq)) %>% 
+  filter(Freq == 51) %>% 
+  select(CommonName, Freq) %>% 
+  rename(species=CommonName)
+
+#Pull the species trend data from the table
+sp.tr <- sp.tab %>% 
+  select(species, change)
+
+#Join this so that we have the trend for the species seen all 51 years
+frgq <- left_join(sub.frq, sp.tr, by = "species")
+
 #Format
 frgq <- frgq %>% 
   arrange(change, species) %>% 
@@ -514,6 +515,26 @@ frgq <- frgq %>%
 
 #Write
 #write.csv(frgq, "outputs/regional/forpub/allyears_speciestable.csv")
+
+
+
+##Table of the most abundant species (count/party hour)
+#Gather the top 28 (same as the number of spp seen all 51 years)
+sub.abund <- F1 %>% 
+  arrange(desc(TotBirdsPH)) %>% 
+  filter(TotBirdsPH>33) %>% 
+  select(CommonName, TotBirdsPH) %>% 
+  rename(species=CommonName)
+
+#Join species trend data so that we have the trend for the species seen all 51 years
+frabun <- left_join(sub.abund, sp.tr, by = "species")
+
+#Format
+frabun <- frabun %>% 
+  rename('Common name' = species, 'Total count/party hour' = TotBirdsPH, 'Species trend' = change)
+
+#Write
+#write.csv(frabun, "outputs/regional/forpub/species_abundance_table.csv")
 
 
 
@@ -564,7 +585,5 @@ tax.table <- left_join(sp, tax2, by = 'Common name')
 
 #Write
 #write.csv(tax.table, "outputs/regional/forpub/allspecies_taxonomytable.csv")
-
-
 
 
