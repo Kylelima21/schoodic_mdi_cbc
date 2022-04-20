@@ -28,6 +28,7 @@ select <- dplyr::select
 mdi <- read.csv("outputs/mdi/cbcmdi_fulldata_20220402.csv", header = TRUE)
 sch <- read.csv("outputs/sch/cbcsch_fulldata_20220402.csv", header = TRUE)
 Y1 <- data.frame(Year = 2021:1971)
+effort <- read.csv("data/schmdi_cbceffort_20220418.csv")
 
 
 
@@ -137,6 +138,16 @@ F1 <- T1.1 %>%
 #------------------------------------------------#
 ####           Summary Statistics             ####
 #------------------------------------------------#
+
+#Mean party hours
+mean.ph <- effort %>% 
+  summarise(mean = mean(mean.hours), sd = sd(mean.hours))
+
+
+#Mean participants
+mean.p <- effort %>% 
+  summarise(mean = mean(mean.participants), sd = sd(mean.participants))
+
 
 #Mean species across all years
 mean.num <- T2 %>% 
@@ -348,7 +359,9 @@ sum(T3.2$NewSpecies[T3.2$Year >= 1991 & T3.2$Year <= 2000]) #6
 #------------------------------------------------#
 
 
-##Statistical tests for each species
+####Statistical tests for each species
+
+#Remove those with n = not enough
 fsub <- F1 %>% 
   filter(Freq > 2)
 
@@ -414,4 +427,20 @@ sp.stats3 <- bind_rows(sp.stats2, fmis)
 sp.stats3 <- sp.stats3 %>% arrange(change, species)
 
 #write.csv(sp.stats3, "outputs/regional/speciesstats_table_20220415.csv", row.names = F)
+
+
+#------------------------------------------------#
+
+
+####Statistical test for trends of effort
+
+#Party hour over time
+cor.test(effort$year, effort$mean.hours, method="spearman")
+
+
+#Participants over time
+cor.test(effort$year, effort$mean.participants, method="spearman")
+
+
+
 

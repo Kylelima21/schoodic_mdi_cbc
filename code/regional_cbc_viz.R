@@ -311,17 +311,17 @@ plot(T2$Year, T2$PartyHours,
      main="Average number of party hours per year")
 lines(T2$Year, T2$PartyHours)
 
+plot(T2$Year, T2$BirdsPartyHour,
+     pch=16, cex=0.5,
+     xlab="Year", ylab="Total count/party hour",
+     main="Total count of birds per party hour")
+lines(T2$Year, T2$BirdsPartyHour)
+
 plot(T2$Year, T2$Birds,
      pch=16, cex=0.5,
      xlab="Year", ylab="Birds",
      main="Total count of birds by year")
 lines(T2$Year, T2$Birds)
-
-plot(T2$Year, T2$BirdsPartyHour,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="Birds/party hour",
-     main="Total count of birds per party hour")
-lines(T2$Year, T2$BirdsPartyHour)
 
 dev.off()
 
