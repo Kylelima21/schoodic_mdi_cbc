@@ -24,7 +24,7 @@ select <- dplyr::select
 ####          Read in Required Data           ####
 #------------------------------------------------#
 
-#read in the files
+#Read in the files
 mdi <- read.csv("outputs/mdi/cbcmdi_fulldata_20220402.csv", header = TRUE)
 sch <- read.csv("outputs/sch/cbcsch_fulldata_20220402.csv", header = TRUE)
 Y1 <- data.frame(Year = 2021:1971)

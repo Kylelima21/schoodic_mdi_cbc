@@ -27,7 +27,7 @@ select <- dplyr::select
 ####          Read in Required Data           ####
 #------------------------------------------------#
 
-#read in the files
+#Read in the files
 cbc <- read.csv("outputs/cbc_alldata_20220415.csv")
 buff1 <- readOGR("outputs/mdi_circle.kml")
 buff2 <- readOGR("outputs/sch_circle.kml")
