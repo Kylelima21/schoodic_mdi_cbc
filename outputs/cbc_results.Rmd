@@ -50,6 +50,7 @@ T2 <- T2.0 %>%
             Birds=sum(Count),
             BirdsPartyHour=sum(CountPartyHour),
             PartyHours=mean(PartyHours))
+
 F1.0 <- T2.0 %>%
   filter(Count > 0)
 
@@ -148,7 +149,7 @@ ggmap(base.map) +
 
 We looked at the Schoodic and MDI Christmas Bird Counts from 1971 to 2021. Mean effort between the two circles, recorded as 'party hours', was highest in 1981 with 80.2 party hours, and lowest in 2005 with 25.2 party hours (**Figure 1**). From 1971 to 2021, a collective 162 species were documented on these CBCs. We are stilling seeing new species added each decade, and this doesn't appear to be slowing down. In the 1990s there were 6 new species added, in the first decade of the 2000s there were also 6 new species, and in the most recent decade observers noted 10 new species (**Figure 2**).
 
-**Figure 3** shows that species seen during 5 CBCs or fewer, and species seen on every CBC make up a majority of all species detected on these CBCs. There are `r length(which(F1$Freq==51))` species that have been detected on every CBC since 1971 (**Table 1**). `r length(which(F1$Freq<5))` species have been recorded on < 5 CBCs (**Table 1**). Of these 28 species that have been detected on every CBC since 1971, `r length(which(frgq$change=="increase"))` species increased, `r length(which(frgq$change=="decrease"))` decreased, and `r length(which(frgq$change=="no change"))` have shown no change over the last 51 years (**Table 2**).
+**Figure 3** shows that species seen during 5 CBCs or fewer, and species seen on every CBC make up a majority of all species detected on these CBCs. There are `r length(which(F1$Freq==51))` species that have been detected on every CBC since 1971 (**Table 1**). `r length(which(F1$Freq<=5))` species have been recorded on < 5 CBCs (**Table 1**). Of these 28 species that have been detected on every CBC since 1971, `r length(which(frgq$change=="increase"))` species increased, `r length(which(frgq$change=="decrease"))` decreased, and `r length(which(frgq$change=="no change"))` have shown no change over the last 51 years (**Table 2**).
 
 Overall, we found a 53% decline in total count of birds recorded on the CBCs since 1971, and a 43% decline in count of birds per party hour since 1971.
 

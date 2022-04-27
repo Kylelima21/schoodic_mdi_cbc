@@ -1,0 +1,163 @@
+"","Common name","Frequency","Total count","Total count/party hour","Min year","Max year"
+"1","Common Eider",51,116271,2822.563,1971,2021
+"2","Herring Gull",51,66362.5,1549.096,1971,2021
+"3","Long-tailed Duck",51,19949,419.432,1971,2021
+"4","White-winged Scoter",50,19284.5,407.068,1971,2021
+"5","American Black Duck",51,18929,438.535,1971,2021
+"6","Bufflehead",51,16146,365.543,1971,2021
+"7","Black-capped Chickadee",51,11831.5,250.89,1971,2021
+"8","American Crow",51,11604,270.136,1971,2021
+"9","Common Goldeneye",51,10636,231.707,1971,2021
+"10","Mourning Dove",51,7577.5,164.983,1971,2021
+"11","Mallard",50,7364,177.376,1971,2021
+"12","European Starling",51,5421,123.694,1971,2021
+"13","Greater Scaup",36,4449,108.412,1971,2017
+"14","Blue Jay",51,4268,88.418,1971,2021
+"15","Purple Sandpiper",48,4017.5,82.057,1971,2021
+"16","Red-breasted Merganser",51,3733.5,85.56,1971,2021
+"17","Great Black-backed Gull",51,3730,82.967,1971,2021
+"18","Horned Grebe",51,3357,73.912,1971,2021
+"19","Rock Pigeon",49,3328,82.186,1973,2021
+"20","American Goldfinch",51,3261.5,73.574,1971,2021
+"21","Common Loon",51,2893,67.344,1971,2021
+"22","Evening Grosbeak",29,2871.5,52.611,1971,2020
+"23","Red-necked Grebe",51,2779.5,64.268,1971,2021
+"24","Ring-billed Gull",51,2320.5,56.062,1971,2021
+"25","Dark-eyed Junco",50,1903.5,45.798,1971,2021
+"26","Black Guillemot",51,1871,41.873,1971,2021
+"27","Red-breasted Nuthatch",51,1601,35.6,1971,2021
+"28","Canada Goose",42,1525.5,34.976,1971,2021
+"29","Black Scoter",47,1363.5,31.105,1971,2021
+"30","American Tree Sparrow",51,1336.5,28.679,1971,2021
+"31","White-winged Crossbill",34,1320,27.477,1971,2021
+"32","Common Redpoll",26,1297,25.362,1971,2020
+"33","Common Raven",51,1150.5,23.151,1971,2021
+"34","Golden-crowned Kinglet",50,1107,24.607,1971,2021
+"35","Brown-headed Cowbird",23,942,20.002,1971,2019
+"36","Downy Woodpecker",51,843,17.794,1971,2021
+"37","House Sparrow",41,841.5,19,1971,2018
+"38","Great Cormorant",51,790.5,17.368,1971,2021
+"39","Pine Siskin",41,660.5,13.585,1971,2021
+"40","White-throated Sparrow",49,643,11.727,1971,2021
+"41","Surf Scoter",50,627,14.836,1971,2021
+"42","American Robin",49,603,14.852,1971,2021
+"43","Hairy Woodpecker",51,578.5,12.246,1971,2021
+"44","Pine Grosbeak",23,572.5,12.777,1971,2020
+"45","Wild Turkey",16,478.5,10.759,1998,2021
+"46","Bald Eagle",51,361,8.61,1971,2021
+"47","Bohemian Waxwing",18,294,6.849,1975,2011
+"48","Song Sparrow",51,291.5,6.11,1971,2021
+"49","Common Grackle",37,286.5,6.322,1971,2021
+"50","House Finch",35,279.5,6.812,1984,2021
+"51","Cedar Waxwing",15,261,7.562,1984,2021
+"52","Common Merganser",43,253,5.405,1971,2021
+"53","Purple Finch",43,247,6.069,1971,2021
+"54","Snow Bunting",20,226.5,4.838,1971,2020
+"55","White-breasted Nuthatch",44,220.5,4.722,1971,2021
+"56","Northern Cardinal",48,219,5.06,1971,2021
+"57","Brown Creeper",51,188.5,4.049,1971,2021
+"58","Harlequin Duck",24,185,4.38,1974,2020
+"59","Ruffed Grouse",47,172,3.311,1971,2021
+"60","Hooded Merganser",24,162,3.638,1974,2021
+"61","Black-legged Kittiwake",36,161,3.93,1971,2020
+"62","Red Crossbill",17,143,3.159,1972,2021
+"63","Bonaparte's Gull",26,115.5,2.942,1971,2019
+"64","Pileated Woodpecker",44,110.5,2.557,1974,2021
+"65","Red-winged Blackbird",28,98.5,1.966,1971,2021
+"66","Razorbill",20,95.5,2.188,1971,2021
+"67","Boreal Chickadee",23,94.5,1.684,1971,2020
+"68","Barrow's Goldeneye",28,79.5,1.646,1971,2018
+"69","Fox Sparrow",20,78,1.281,1971,2018
+"70","Yellow-rumped Warbler",29,77.5,1.825,1973,2019
+"71","Red-throated Loon",40,65,1.571,1971,2021
+"72","Double-crested Cormorant",10,60.5,1.25,1982,2020
+"73","Iceland Gull",38,60.5,1.591,1971,2020
+"74","Northern Shrike",39,53,1.219,1971,2020
+"75","Canada Jay",19,41,0.819,1971,2013
+"76","Tufted Titmouse",19,35,0.816,1982,2021
+"77","Northern Gannet",14,32.5,0.992,1992,2018
+"78","Belted Kingfisher",34,29.5,0.624,1971,2021
+"79","Red-tailed Hawk",34,28.5,0.616,1971,2021
+"80","Sharp-shinned Hawk",31,27,0.64,1971,2021
+"81","Ring-necked Pheasant",12,24.5,0.5,1971,1990
+"82","Northern Mockingbird",21,23,0.445,1972,2020
+"83","Glaucous Gull",22,20.5,0.551,1972,2019
+"84","Dovekie",14,19,0.423,1971,2018
+"85","King Eider",16,18,0.353,1971,2017
+"86","American Wigeon",7,17,0.368,2011,2021
+"87","Ruddy Duck",3,16,0.295,1972,2015
+"88","Redhead",1,15,0.405,1971,1971
+"89","Killdeer",6,14,0.308,1972,2002
+"90","Northern Flicker",15,13.5,0.325,1976,2021
+"91","Rusty Blackbird",12,13.5,0.293,1971,2011
+"92","Northern Goshawk",17,11.5,0.298,1972,2010
+"93","Thick-billed Murre",8,11.5,0.328,1971,2018
+"94","Great Blue Heron",13,10.5,0.237,1973,2012
+"95","Red-bellied Woodpecker",9,10.5,0.241,1990,2020
+"96","Cooper's Hawk",11,10,0.218,2002,2021
+"97","Rough-legged Hawk",14,10,0.222,1977,2017
+"98","Chipping Sparrow",12,9.5,0.211,1972,2017
+"99","Northern Pintail",15,9,0.203,1972,2019
+"100","Barred Owl",12,8.5,0.208,1973,2020
+"101","Hermit Thrush",9,8,0.182,1971,2020
+"102","Horned Lark",3,8,0.11,1977,1980
+"103","Swamp Sparrow",5,8,0.118,1979,2011
+"104","Pied-billed Grebe",9,7.5,0.146,1972,2002
+"105","Baltimore Oriole",10,7,0.168,1971,2014
+"106","Great Horned Owl",10,7,0.148,1975,2020
+"107","Northern Harrier",11,7,0.161,1977,2021
+"108","Winter Wren",6,7,0.136,1973,2021
+"109","Black-backed Woodpecker",8,6.5,0.154,1974,2011
+"110","Green-winged Teal",8,6,0.151,1972,2021
+"111","Peregrine Falcon",8,6,0.14,1992,2012
+"112","Brown Thrasher",7,5.5,0.108,1971,2005
+"113","Snowy Owl",7,5.5,0.138,1987,2016
+"114","Brant",1,5,0.093,1972,1972
+"115","Gray Catbird",4,5,0.137,1979,2005
+"116","Ruby-crowned Kinglet",3,5,0.12,1971,2002
+"117","Sanderling",1,5,0.069,1983,1983
+"118","White-crowned Sparrow",5,5,0.079,1972,2015
+"119","Wilson's Snipe",3,5,0.104,1973,1985
+"120","Black-headed Gull",8,4,0.073,1973,1987
+"121","Eastern Towhee",6,4,0.087,1971,1987
+"122","Field Sparrow",3,4,0.075,1974,1987
+"123","Northern Bobwhite",1,4,0.111,2007,2007
+"124","Pine Warbler",6,4,0.085,1982,2012
+"125","Spruce Grouse",6,4,0.085,1982,2019
+"126","Dickcissel",3,3,0.054,1972,1976
+"127","Eastern Meadowlark",2,3,0.069,1973,1975
+"128","Red-headed Woodpecker",3,3,0.075,1973,2018
+"129","Lesser Scaup",3,2.5,0.055,1972,2017
+"130","Carolina Wren",2,2,0.036,1979,1993
+"131","Eastern Bluebird",1,2,0.039,2006,2006
+"132","Eurasian Wigeon",2,2,0.03,1981,2015
+"133","Orange-crowned Warbler",2,2,0.045,1971,2021
+"134","American Kestrel",3,1.5,0.027,1976,1985
+"135","Pacific Loon",3,1.5,0.049,2000,2007
+"136","American Pipit",1,1,0.025,2017,2017
+"137","American Three-toed Woodpecker",1,1,0.014,1978,1978
+"138","Atlantic Puffin",1,1,0.014,1980,1980
+"139","Black-and-white Warbler",1,1,0.025,2017,2017
+"140","Black-bellied Plover",1,1,0.022,2012,2012
+"141","Black-throated Sparrow",1,1,0.018,2015,2015
+"142","Broad-winged Hawk",2,1,0.021,2002,2020
+"143","Common Yellowthroat",1,1,0.022,1973,1973
+"144","Dunlin",1,1,0.014,1979,1979
+"145","Eastern Phoebe",1,1,0.018,2021,2021
+"146","Gadwall",1,1,0.019,2014,2014
+"147","Green-tailed Towhee",1,1,0.022,1988,1988
+"148","Lapland Longspur",1,1,0.028,2007,2007
+"149","Lesser Black-backed Gull",1,1,0.027,1987,1987
+"150","Merlin",1,1,0.023,2013,2013
+"151","Northern Hawk Owl",1,1,0.014,1978,1978
+"152","Northern Saw-whet Owl",1,1,0.02,1992,1992
+"153","Palm Warbler",1,1,0.02,1992,1992
+"154","Red-shouldered Hawk",1,1,0.017,2020,2020
+"155","Ring-necked Duck",1,1,0.017,2020,2020
+"156","Short-eared Owl",1,1,0.027,1975,1975
+"157","Snow Goose",1,1,0.021,2003,2003
+"158","Townsend's Solitaire",1,1,0.024,1990,1990
+"159","Varied Thrush",1,1,0.014,1980,1980
+"160","Vesper Sparrow",1,1,0.016,1982,1982
+"161","Yellow-bellied Sapsucker",1,1,0.025,2017,2017
+"162","Yellow-breasted Chat",1,1,0.024,1984,1984

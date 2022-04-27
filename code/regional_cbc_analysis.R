@@ -24,10 +24,11 @@ select <- dplyr::select
 ####          Read in Required Data           ####
 #------------------------------------------------#
 
-#read in the files
+#Read in the files
 mdi <- read.csv("outputs/mdi/cbcmdi_fulldata_20220402.csv", header = TRUE)
 sch <- read.csv("outputs/sch/cbcsch_fulldata_20220402.csv", header = TRUE)
-Y1 <- read.csv('data/Years_MDI.csv', header=TRUE) #this starts with 1971
+Y1 <- data.frame(Year = 2021:1971)
+effort <- read.csv("data/schmdi_cbceffort_20220418.csv")
 
 
 
@@ -47,40 +48,42 @@ sch <- sch %>%
 cbc <- bind_rows(mdi, sch)
 
 
+
 ##Do calculations
-#Get mean count and party h
+#Get mean count and party hour
 metr <- cbc %>%
   group_by(CommonName, Year) %>% 
   summarise(Count=mean(Count), PartyH=mean(PartyHours)) 
 
-#Party h is not correct for species only detected in one circle that year, fix
+#Party hour is not correct for species only detected in one circle that year, fix
 yh <- metr %>% 
   group_by(Year) %>% 
   summarise(PartyHours = median(PartyH))
 
-#Combine new party hours that are right
+#Combine new party hours that are right and remove incorrect column
 newjoin <- left_join(metr, yh) %>% 
   select(-PartyH)
 
-#Calculate countpartyhour
+#Calculate countpartyhour statistic from these updated mean values
 T2.0 <- newjoin %>% 
   mutate(CountPartyHour = Count/PartyHours)
-  
-#Fill in missing years with zero
+ 
+
+ 
+##Fill in missing years with zero
+#Create a list of all the species to run through the purrr loop
 sp.list <- unique(cbc$CommonName)
 
-
+#Summarize for totals by year to merge for each species in the loop
 all.bird.data <- T2.0 %>% 
   group_by(Year) %>% 
   summarise(PartyHours = median(PartyHours))
 
-
+#Function to add in years where species were not seen
 add.zero <- function(spname) {
   
   sp <- T2.0 %>% 
     filter(CommonName == paste(spname))
-  
-  #sp$Year <- as.character(sp$Year)
   
   withzed <- full_join(sp, all.bird.data, by = "Year") %>% 
     select(-PartyHours.x) %>% 
@@ -97,19 +100,23 @@ add.zero <- function(spname) {
 }
 
 
+#Run this function through purrr loop to add data for each year for each species
+#162 species over 51 year --- 162*51 = 8262 rows
 fulldat <- map(sp.list, ~add.zero(.))
 
+#turn into usable r object
 sp.full <- as.data.frame(do.call(rbind, fulldat))
 
+#Write out for use in rmarkdown report
 #write.csv(sp.full, "outputs/cbc_alldata_20220415.csv", row.names = F)
 
-#no. of species, no. of birds, birds sum by party hours,  
-#party hours, observers
-#remove zeros
+
+##Create summary dfs to use in analyses
+#Remove zeros to use later
 T1.1 <- T2.0 %>%
   filter(Count > 0)
 
-#For species number based calcs
+#Year summaries: # of species, total count, count/partyhour, party hours
 T2 <- T2.0 %>% 
   group_by(Year) %>%
   summarise(NoSpecies=length(which(Count>0)),
@@ -117,18 +124,50 @@ T2 <- T2.0 %>%
             BirdsPartyHour=sum(CountPartyHour),
             PartyHours=mean(PartyHours))
 
-#Frequency of years species is present
-#remove zeros
-F1.0 <- T2.0 %>%
-  filter(Count > 0)
-
-F1 <- F1.0 %>% 
+#Species summaries: # of years species was present, total count, count/partyhour, year of min and max count
+F1 <- T1.1 %>% 
   group_by(CommonName) %>% 
   summarise(Freq=length(Year),
             TotalBirds=sum(Count),
             TotBirdsPH=sum(CountPartyHour),
             MinYear=min(Year),
             MaxYear=max(Year))
+
+
+
+#------------------------------------------------#
+####           Summary Statistics             ####
+#------------------------------------------------#
+
+#Mean party hours
+mean.ph <- effort %>% 
+  summarise(mean = mean(mean.hours), sd = sd(mean.hours))
+
+
+#Mean participants
+mean.p <- effort %>% 
+  summarise(mean = mean(mean.participants), sd = sd(mean.participants))
+
+
+#Mean species across all years
+mean.num <- T2 %>% 
+  summarise(mean = mean(NoSpecies), sd = sd(NoSpecies))
+
+
+#Mean count across all years
+mean.count <- T2 %>% 
+  summarise(mean = mean(Birds), sd = sd(Birds))
+
+
+#Mean count/party hour across all years
+mean.cph <- T2 %>% 
+  summarise(mean = mean(BirdsPartyHour), sd = sd(BirdsPartyHour))
+
+
+#Number of spp in the last decade
+yep <- T1.1 %>%
+  filter(Year > 2011)
+check <- as.data.frame(unique(yep$CommonName)) #120
 
 
 
@@ -175,11 +214,14 @@ T2 %>%
 
 ####Number of birds by Year
 
+#Spearman rank correlation test
 cor(T2$Year, T2$Birds, method="spearman")
 cor.test(T2$Year, T2$Birds, method="spearman")
 #S = 38636, p-value < 2.2e-16***
 #rho = -0.7482353 
 
+
+#Linear model
 m.Birds <- lm(Birds~Year, data=T2)
 summary(m.Birds) #Adjusted R-squared:  0.3565, F-statistic:  28.7 on 1 and 49 DF,  p-value: 2.25e-06***
 summary(T2$Birds) 
@@ -188,14 +230,23 @@ summary(T2$Birds)
 
 sd(T2$Birds) #2596.276
 
-# #math determining percent decline from linear model
-# 129012.39+1971*-61.87 #7066.62
-# 129012.39+2020*-61.87 #4034.99
-# 1-(4034.99/7066.62) #= 42.9% decline
 
-#math determining percent decline from 10 year averages
+##Test for difference between first and last decades
+#Math determining percent decline from 10 year averages
 100-(sum(T2$Birds[T2$Year>2011])/sum(T2$Birds[T2$Year<1981]))*100
 #53.03% decline
+
+#Run test of normality
+birddif <- with(T2, Birds[Year<1981] - Birds[Year>2011])
+shapiro.test(birddif) #very much not normal
+
+#Create dataframe of the first and last decades and assign group
+count.t <- T2 %>% 
+  filter(Year>2011 | Year<1981) %>% 
+  mutate(group = ifelse(Year>2011, "last", "first"))
+
+#Compute paired t-test
+t.test(Birds ~ group, data = count.t, paired = TRUE)
 
 
 T2 %>% 
@@ -235,14 +286,20 @@ summary(T2$BirdsPartyHour)
 
 sd(T2$BirdsPartyHour) #82.00265
 
-# #math determining percent decline from linear model
-# 8670.473+1969*-4.241 #319.944
-# 8670.473+2020*-4.241 #103.653
-# 1-(103.653/319.944) #67.6% decline
 
-#math determining percent decline from 10 year averages
+
+#Test for difference between the two decades
+#Math determining percent decline from 10 year averages
 100-(sum(T2$BirdsPartyHour[T2$Year>2011])/sum(T2$BirdsPartyHour[T2$Year<1981]))*100
 #43.01% decline
+
+#Run test of normality
+phdif <- with(T2, BirdsPartyHour[Year<1981] - BirdsPartyHour[Year>2011])
+shapiro.test(phdif) #very much not normal
+
+#Compute paired t-test
+t.test(BirdsPartyHour ~ group, data = count.t, paired = TRUE)
+
 
 T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
@@ -302,20 +359,16 @@ sum(T3.2$NewSpecies[T3.2$Year >= 1991 & T3.2$Year <= 2000]) #6
 #------------------------------------------------#
 
 
-#statistical tests for each species
+####Statistical tests for each species
 
-# sp.stat <- data.frame(species  = NA,
-#                       count.est = NA,
-#                       count.p = NA,
-#                       cph.est = NA,
-#                       cph.p = NA)
-
+#Remove those with n = not enough
 fsub <- F1 %>% 
   filter(Freq > 2)
 
+#Create input for purrr loop
 species <- unique(fsub$CommonName) 
-#species <- unique(T2.0$CommonName) 
 
+#Create function that runs spearman tests on every species
 sprmn <- function(spname) {
   sp <- T2.0 %>% 
     filter(CommonName == paste(spname))
@@ -331,19 +384,22 @@ sprmn <- function(spname) {
 }
 
 
+#Run purrr loop
 output <- map(species, ~sprmn(.))
 
+#Convert to a data frame
 sp.stats <- as.data.frame(do.call(rbind, output))
 
+#Rename columns
 colnames(sp.stats) <- c("species", "count.est", "count.p", "cph.est", "cph.p")
 
-
+#Round the numbers to look simpler/cleaner
 sp.stats$count.est <- round(as.numeric(sp.stats$count.est), digits = 3)
 sp.stats$count.p <- round(as.numeric(sp.stats$count.p), digits = 3)
 sp.stats$cph.est <- round(as.numeric(sp.stats$cph.est), digits = 3)
 sp.stats$cph.p <- round(as.numeric(sp.stats$cph.p), digits = 3)
 
-
+#Determine the significant relationships
 sig <- sp.stats %>% 
   filter(cph.p < 0.05)
 
@@ -373,287 +429,18 @@ sp.stats3 <- sp.stats3 %>% arrange(change, species)
 #write.csv(sp.stats3, "outputs/regional/speciesstats_table_20220415.csv", row.names = F)
 
 
-
-
-#------------------------------------------------#
-####               Create Viz                 ####
-#------------------------------------------------#
-
-##Map
-#Create dataframe with circle centers
-circpoint <- data.frame(circle  = c("Mount Desert Island center", "Schoodic center"),
-                        latitude = c("44.34", "44.43"),
-                        longitude = c("-68.31", "-68.11"))
-
-#Fix non-numeric
-circpoint$latitude <- as.numeric(circpoint$latitude)
-circpoint$longitude <- as.numeric(circpoint$longitude)
-
-#Read in CBC Circles
-buff1 <- readOGR("outputs/mdi_circle.kml")
-buff2 <- readOGR("outputs/sch_circle.kml")
-
-#Fortify for ggplot
-buff1f <- fortify(buff1)
-buff2f <- fortify(buff2)
-
-#This section removes the sch data that overlapped with the MDI circle
-sf_buff1 <- st_as_sf(buff1)
-sf_buff1_polygons <- st_polygonize(sf_buff1)
-shp_buff1 <- as(sf_buff1_polygons, "Spatial")
-
-buff2f$longitude <- buff2f$"long"
-buff2f$latitude <- buff2f$"lat"
-
-coordinates(buff2f) <- c("long", "lat")
-
-slot(buff2f, "proj4string") <- slot(shp_buff1, "proj4string")
-
-output <- over(shp_buff1, buff2f, returnList = TRUE) 
-
-output.df <- as.data.frame(output$`0`) #need to remove rows 14:29
-
-buff2.0 <- fortify(buff2)
-
-buff2.0[c(14:29),] <- NA
-
-
-#Get base map
-base.map <- get_stamenmap(
-  bbox = c(left = -68.61, bottom = 44.15, right = -67.83, top = 44.6),
-  maptype = 'toner-lite',
-  zoom = 11)
-
-#Plot
-ggmap(base.map) +
-  geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
-             shape = 21,
-             size = 2.5,
-             color = 'black') +
-  geom_path(data = buff1f, aes(x=long, y=lat), color = "navyblue") +
-  geom_path(data = buff2.0, aes(x=long, y=lat), color = "forestgreen") +
-  theme_classic(base_size = 14) +
-  ggtitle("Christmas Bird Count Circles") +
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.ticks = element_blank(),
-        axis.text = element_blank(),
-        axis.title = element_blank(),
-        legend.position = c(0.79, 0.13),
-        legend.background = element_rect(fill = "white", color = "black"),
-        panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
-  scale_fill_manual("CBC circle", values = c("navyblue", "forestgreen"))
-
-
 #------------------------------------------------#
 
 
-##Number of Years Species Observed
-png(filename = "outputs/regional/aa_YearsSpeciesObserved.png",
-    width=5.5, height=3.0, units="in", res = 150)
+####Statistical test for trends of effort
 
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
+#Party hour over time
+cor.test(effort$year, effort$mean.hours, method="spearman")
 
-hist(F1$Freq, xlab="Years observed", ylab="No. of Species",
-     main="Number of Years Species Observed")
 
-dev.off()
-
-#------------------------------------------------#
-
-##Bird Species Per Year
-png(filename = "outputs/regional/aa_NoSpecies.png",
-    width=5.5, height=3.0, units="in", res = 150)
-
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-
-plot(T2$Year, T2$NoSpecies,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="Species",
-     main="Total species per year")
-lines(T2$Year, T2$NoSpecies)
-
-dev.off()
-
-#------------------------------------------------#
-
-##Birds Per Year
-png(filename = "outputs/regional/aa_NoBirds.png",
-    width=5.5, height=3.0, units="in", res = 150)
-
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-
-plot(T2$Year, T2$Birds,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="Birds",
-     main="Birds per year")
-lines(T2$Year, T2$Birds)
-
-dev.off()
-
-#------------------------------------------------#
-
-##Birds Per Party Hour
-png(filename = "outputs/regional/aa_NoBirdsPartyHour.png",
-    width=5.5, height=3.0, units="in", res = 150)
-
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-
-plot(T2$Year, T2$BirdsPartyHour,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="Birds/PartyHour",
-     main="Total birds per party hour")
-lines(T2$Year, T2$BirdsPartyHour)
-
-dev.off()
-
-#------------------------------------------------#
-
-##Party Hour
-png(filename = "outputs/regional/aa_PartyHours.png",
-    width=5.5, height=3.0, units="in", res = 150)
-
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-
-plot(T2$Year, T2$PartyHours,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="PartyHours",
-     main="Party Hours per Year")
-lines(T2$Year, T2$PartyHours)
-
-dev.off()
+#Participants over time
+cor.test(effort$year, effort$mean.participants, method="spearman")
 
 
 
 
-#------------------------------------------------#
-#------------------------------------------------#
-
-
-
-##Observers per year and party hours
-
-#total no of species observed
-#min year per species
-T3 <- T1.1 %>%
-  group_by(CommonName) %>%
-  summarise(Year=min(Year))
-
-#max year per species
-T3.max <- T1.1 %>%
-  group_by(CommonName) %>%
-  summarise(Year=max(Year))
-
-head(T3)
-
-T3.1 <- T3 %>% 
-  group_by(Year) %>%
-  summarise(NewSpecies=length(Year))
-head(T3.1)
-
-plot(T3.1$Year, T3.1$NewSpecies)
-
-#need to add in all of the zeros and then need to add in new
-#species from each year
-
-T3.2 <- merge(T3.1, Y1, by="Year",
-            all.y=TRUE) #include all rows from second data frame
-head(T3.2)
-T3.2[is.na(T3.2)] <- 0
-T3.2$cumsum <- cumsum(T3.2$NewSpecies)
-
-#Plot
-png(filename = "outputs/regional/aa_CumulativeBirds.png",
-    width=5.5, height=3.0, units="in", res = 150)
-
-par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-
-plot(T3.2$Year, T3.2$cumsum,
-     pch=16, cex=0.5,
-     xlab="Year", ylab="Cumulative species",
-     main="Cumulative Bird Species")
-lines(T3.2$Year, T3.2$cumsum)
-
-dev.off()
-
-
-
-#------------------------------------------------#
-#------------------------------------------------#
-
-
-
-##Plot of Count and Count Party Hour
-#FOR EVERY INDIVIDUAL SPECIES
-
-T1 <- T2.0
-
-#create plot for each species
-up <- as.vector(unique(T1$CommonName))
-
-
-#begin loop
-for (i in 1:length(up)) {
-  T1.1<-subset(T1,CommonName==up[i])
-  
-  png(filename =paste("outputs/regional/spfigs/Figure_",up[i],".png",sep=""),
-      width=5.0, height=3.0, units="in", res = 150)
-  
-  par(mfrow=c(1,1), mgp=c(1.5,0.5,0), mar=c(2.5,2.5,2,2.5), oma=c(0.1,0.1,0.1,0.1))
-  
-  plot(T1.1$Year, T1.1$CountPartyHour,
-       pch=16, cex=0.5,
-       xlab="Year", ylab="Birds/Party Hour",
-       main=T1.1$CommonName[T1.1$Year==1971])
-  lines(T1.1$Year, T1.1$CountPartyHour, lwd=1.2)
-  
-  par(new = T)
-  plot(T1.1$Year, T1.1$Count,
-       axes=F, xlab=NA, ylab=NA, 
-       pch=16, cex=0.2, col="red")
-  lines(T1.1$Year, T1.1$Count, col="red", lwd=0.8)
-  axis(side = 4, col="red", col.axis="red", col.lab="red")
-  mtext(side = 4, line = 1.5, 'Number of birds', col="red")
-  
-  
-  dev.off()
-  
-  
-  rm(T1.1) # remove the T1 table after each loop to ensure no carry over
-} # close i
-#end of loop
-
-
-ATSP <- T1 %>% 
-  filter(CommonName=="American Tree Sparrow") %>% 
-  mutate(t.count = Count/60)
-
-
-
-ggplot(ATSP, aes(x=Year)) +
-  geom_line(aes(y=CountPartyHour, color="Count/party hour"), size = 1.3) +
-  geom_line(aes(y=t.count, color="Count"), size = 1.3) +
-  scale_y_continuous(name="Count/party hour", sec.axis = sec_axis(~.*60, name="Count")) +
-  theme_bw() +
-  labs(title="American Tree Sparrow Population Changes Through Time", x="Year") +
-  theme(plot.title = element_text(hjust = 0.5, size = "20"),
-        axis.text = element_text(color = "black", size = "12"),
-        axis.title = element_text(size = "16"),
-        axis.line.y.right = element_line(color = "#2166AC"), 
-        axis.ticks.y.right = element_line(color = "#2166AC"),
-        axis.text.y.right = element_text(color = "#2166AC"), 
-        axis.title.y.right = element_text(color = "#2166AC"),
-        axis.line.y.left = element_line(color = "#D6604D"), 
-        axis.ticks.y.left = element_line(color = "#D6604D"),
-        axis.text.y.left = element_text(color = "#D6604D"), 
-        axis.title.y.left = element_text(color = "#D6604D"),
-        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "13"), 
-        strip.background = element_rect(colour="black", fill="gray"),
-        panel.background = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(), 
-        panel.border = element_rect(color = 'black', fill = NA),
-        legend.title = element_text(size=18),
-        legend.text = element_text(size=16)) +
-  scale_color_manual(name="Statistic",
-                     breaks=c("Count/party hour", "Count"),
-                     values=c("Count/party hour"="#D6604D", "Count"="#2166AC"))
