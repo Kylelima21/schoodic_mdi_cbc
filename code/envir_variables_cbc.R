@@ -1,6 +1,5 @@
 #Environmental variables for CBC analysis - ANP and surrounding areas 
-#Schoodic Institute at Acadia National Park
-#By Kyle Lima, Peter Neslon, and Nick Fisichelli, 2022
+#Schoodic Institute at Acadia National Park, 2022
 
 #------------------------------------------------#
 ####           Packages Required              ####
@@ -22,11 +21,11 @@ select <- dplyr::select
 #------------------------------------------------#
 
 ####IMPORTANT
-##You will have to enter 0 to obtain your own token linked to your account
+##You will have to enter 0 in the console to obtain your own token linked to your account
 ##Commented out as to not rerun
 
 # ##Download data
-# drive_download('christmas_bird_count/data/land_cover/dec_min_temp.csv', path = 'data/dec_min_temp.csv', overwrite = TRUE)
+# drive_download('christmas_bird_count/data/land_cover/dec_min_change.csv', path = 'data/dec_min_change.csv', overwrite = TRUE)
 # drive_download('christmas_bird_count/data/land_cover/precip_change.csv', path = 'data/precip_change.csv', overwrite = TRUE)
 # drive_download('christmas_bird_count/data/land_cover/sea_surface_temp.csv', path = 'data/sea_surface_temp.csv', overwrite = TRUE)
 # drive_download('christmas_bird_count/data/land_cover/temp_change.csv', path = 'data/temp_change.csv', overwrite = TRUE)
@@ -40,7 +39,7 @@ select <- dplyr::select
 #------------------------------------------------#
 
 #Read in the files
-dec_min_temp <- read.csv("data/dec_min_temp.csv")
+dec_min_change <- read.csv("data/dec_min_change.csv")
 precip_change <- read.csv("data/precip_change.csv")
 sea_surface_temp <- read.csv("data/sea_surface_temp.csv")
 temp_change <- read.csv("data/temp_change.csv")
@@ -55,24 +54,26 @@ urban_area <- read.csv("data/urban_area.csv")
 
 ##December min temperature
 #Pivot to long format
-dec_min_temp <- dec_min_temp %>%
+dec_min <- dec_min_change %>%
   select(-c(system.index, `.geo`)) %>% 
-  pivot_longer(X197101_tmmn:X202112_tmmn)
+  pivot_longer(X19790102_mean_2m_air_temperature:X20200709_mean_2m_air_temperature)
 
 #Get year and month out of the name column
-dec_min_temp[c('dat', 'trash')] <- str_split_fixed(dec_min_temp$name, '_', 2)
-dec_min_temp[c('trash2', 'year_month')] <- str_split_fixed(dec_min_temp$dat, 'X', 2)
-dec_min_temp[c('trash3', 'month')] <- str_split_fixed(dec_min_temp$year_month, "^\\d\\d\\d.", 2)
-dec_min_temp[c('year', 'trash4')] <- str_split_fixed(dec_min_temp$year_month, "\\d\\d$", 2)
+dec_min[c('dat', 'trash')] <- str_split_fixed(dec_min$name, '_', 2)
+dec_min[c('trash2', 'year_month')] <- str_split_fixed(dec_min$dat, 'X', 2)
+dec_min[c('trash3', 'month_day')] <- str_split_fixed(dec_min$year_month, "^\\d\\d\\d.", 2)
+dec_min[c('year', 'trash4')] <- str_split_fixed(dec_min$year_month, "\\d\\d\\d\\d$", 2)
+dec_min[c('month', 'trash4')] <- str_split_fixed(dec_min$month_day, "\\d\\d$", 2)
 
-#Clean and simplify to get december only data by year
-dec_minT <- dec_min_temp %>% 
-  filter(month == 12) %>% 
-  select(year, value) %>% 
-  rename(temp.c = value)
+#Clean and simplify to get temp values
+dec_mins <- dec_min %>% 
+  group_by(year, month) %>% 
+  summarise(temp.k = min(value, na.rm = T)) %>% 
+  select(year, month, temp.k) %>% 
+  filter(year != 2020 & month == 12)
 
-#Convert temperature -- Something doesn't seem right with these temps??
-dec_minT$temp.f <- celsius.to.fahrenheit(dec_minT$temp.c)
+#Convert temperature
+dec_mins$temp.f <- kelvin.to.fahrenheit(dec_mins$temp.k)
 
 
 
@@ -94,7 +95,7 @@ ann_precip <- precip_change %>%
   rename(precip.mm = value)
 
 #Convert temperature -- Something doesn't seem right with these values??
-ann_precip$precip.in <- udunits2::ud.convert(ann_precip$precip.mm, "mm", "in")
+#ann_precip$precip.in <- udunits2::ud.convert(ann_precip$precip.mm, "mm", "in")
 
 
 
@@ -119,7 +120,7 @@ ocean_temp <- sea_surf_temp %>%
   select(year, month, temp.k)
 
 #Convert temperature -- Something doesn't seem right with these temps??
-ocean_temp$temp.f <- kelvin.to.fahrenheit(ocean_temp$temp.k)
+#ocean_temp$temp.f <- kelvin.to.fahrenheit(ocean_temp$temp.k)
 
 
 
@@ -136,14 +137,14 @@ temp_changes[c('trash3', 'month_day')] <- str_split_fixed(temp_changes$year_mont
 temp_changes[c('year', 'trash4')] <- str_split_fixed(temp_changes$year_month, "\\d\\d\\d\\d$", 2)
 temp_changes[c('month', 'trash4')] <- str_split_fixed(temp_changes$month_day, "\\d\\d$", 2)
 
-#Clean and simplify to get december only data by year
+#Clean and simplify to get temp values
 ann_temp <- temp_changes %>% 
   group_by(year, month) %>% 
   summarise(temp.k = mean(value, na.rm = T)) %>% 
   select(year, month, temp.k) %>% 
   filter(year!=2020)
 
-#Convert temperature -- Something doesn't seem right with these temps??
+#Convert temperature
 ann_temp$temp.f <- kelvin.to.fahrenheit(ann_temp$temp.k)
 
 
@@ -157,7 +158,7 @@ dec_temp <- temp_changes %>%
   select(year, month, temp.k) %>% 
   filter(year!=2020 & month == 12)
 
-#Convert temperature -- Something doesn't seem right with these temps??
+#Convert temperature
 dec_temp$temp.f <- kelvin.to.fahrenheit(dec_temp$temp.k)
 
 
@@ -200,8 +201,100 @@ urbanized_area <- urban_zone %>%
 ####            Statistical tests             ####
 #------------------------------------------------#
 
+##December min temperature
+#Fix numeric issue for cor.test
+dec_mins$year <- as.numeric(dec_mins$year)
+
+#Run spearman correlation -- rho 0.391, p = 0.012* 
+cor.test(dec_mins$year, dec_mins$temp.f, method="spearman")
+
+#Calculate percentage change -- 57.18% increase
+100-(mean(dec_mins$temp.f[dec_mins$year<1984])/mean(dec_mins$temp.f[dec_mins$year>2014]))*100
 
 
+
+##Annual precipitation
+#Calculate year means
+ann_rainfall <- ann_precip %>% 
+  group_by(year) %>% 
+  summarise(rainfall = mean(precip.mm))
+
+#Fix numeric issue for cor.test
+ann_rainfall$year <- as.numeric(ann_rainfall$year)
+
+#Run spearman correlation -- rho 0.197, p = 0.166
+cor.test(ann_rainfall$year, ann_rainfall$rainfall, method="spearman")
+
+#Calculate percentage change -- 5.36% increase
+100-(mean(ann_rainfall$rainfall[ann_rainfall$year<1987])/mean(ann_rainfall$rainfall[ann_rainfall$year>2016]))*100
+
+
+
+##Sea surface temperature
+#Calculate year means
+ocean_temp <- ocean_temp %>% 
+  group_by(year) %>% 
+  summarise(temp = mean(temp.k))
+
+#Fix numeric issue for cor.test
+ocean_temp$year <- as.numeric(ocean_temp$year)
+
+#Run spearman correlation -- rho 0.559, p < 0.001**
+cor.test(ocean_temp$year, ocean_temp$temp, method="spearman")
+
+#Calculate percentage change -- 13.48% increase
+100-(mean(ocean_temp$temp[ocean_temp$year<1987])/mean(ocean_temp$temp[ocean_temp$year>2016]))*100
+
+
+
+##Annual temperature changes
+#Fix numeric issue for cor.test
+ann_temp$year <- as.numeric(ann_temp$year)
+
+#Run spearman correlation -- rho 0.038, p = 0.39 
+cor.test(ann_temp$year, ann_temp$temp.f, method="spearman")
+
+#Calculate percentage change -- 2.07% increase
+100-(mean(ann_temp$temp.f[ann_temp$year<1984])/mean(ann_temp$temp.f[ann_temp$year>2014]))*100
+
+
+
+##December temperature changes
+#Fix numeric issue for cor.test
+dec_temp$year <- as.numeric(dec_temp$year)
+
+#Run spearman correlation -- rho 0.125, p = 0.44 
+cor.test(dec_temp$year, dec_temp$temp.f, method="spearman")
+
+#Calculate percentage change -- 3.79% increase
+100-(mean(dec_temp$temp.f[dec_temp$year<1984])/mean(dec_temp$temp.f[dec_temp$year>2014]))*100
+
+
+
+##Tidal area change over time
+#Fix numeric issue for cor.test
+mudflat_area$year <- as.numeric(mudflat_area$year)
+
+#Run spearman correlation -- rho -0.75, p = 0.01*
+cor.test(mudflat_area$year, mudflat_area$area, method="spearman")
+
+#Calculate percentage change -- -39.64% decrease
+100-(mean(mudflat_area$area[mudflat_area$year<1988])/mean(mudflat_area$area[mudflat_area$year>2010]))*100
+
+
+
+##Urban area change over time
+#Get only the impervious landcover metric
+urban <- urbanized_area %>% filter(type == "impervious")
+
+#Fix numeric issue for cor.test
+urban$year <- as.numeric(urban$year)
+
+#Run spearman correlation -- rho 1, p < 0.0001***
+cor.test(urban$year, urban$area, method="spearman")
+
+#Calculate percentage change -- 6.6% increase
+100-(mean(urban$area[urban$year<2006])/mean(urban$area[urban$year>2014]))*100
 
 
 

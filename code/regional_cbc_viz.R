@@ -1,6 +1,5 @@
 #Regional CBC analysis visualizations for ANP and surrounding areas 
-#Schoodic Institute at Acadia National Park
-#By Nick Fisichelli 2021, and Kyle Lima 2022
+#Schoodic Institute at Acadia National Park 2021, 2022
 
 #------------------------------------------------#
 ####           Packages Required              ####
