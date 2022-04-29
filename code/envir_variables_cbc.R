@@ -217,7 +217,7 @@ cor.test(dec_mins$year, dec_mins$temp.f, method="spearman")
 #Calculate year means
 ann_rainfall <- ann_precip %>% 
   group_by(year) %>% 
-  summarise(rainfall = mean(precip.mm))
+  summarise(rainfall = sum(precip.mm))
 
 #Fix numeric issue for cor.test
 ann_rainfall$year <- as.numeric(ann_rainfall$year)
@@ -266,7 +266,7 @@ dec_temp$year <- as.numeric(dec_temp$year)
 #Run spearman correlation -- rho 0.125, p = 0.44 
 cor.test(dec_temp$year, dec_temp$temp.f, method="spearman")
 
-#Calculate percentage change -- 3.79% increase
+#Calculate percentage change -- 3.78% increase
 100-(mean(dec_temp$temp.f[dec_temp$year<1984])/mean(dec_temp$temp.f[dec_temp$year>2014]))*100
 
 
@@ -295,6 +295,12 @@ cor.test(urban$year, urban$area, method="spearman")
 
 #Calculate percentage change -- 6.6% increase
 100-(mean(urban$area[urban$year<2006])/mean(urban$area[urban$year>2014]))*100
+
+
+
+
+
+
 
 
 
