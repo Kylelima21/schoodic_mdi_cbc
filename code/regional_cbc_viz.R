@@ -5,20 +5,14 @@
 ####           Packages Required              ####
 #------------------------------------------------#
 
+library(tidyverse)
 library(ggplot2)
-library(dplyr)
 library(ggstatsplot)
-library(utils)
-library(tidyr)
 library(sp)
 library(ggmap)
 library(rgdal)
 library(cowplot)
 library(sf)
-
-
-#define function
-select <- dplyr::select
 
 
 
@@ -33,6 +27,7 @@ buff2 <- readOGR("outputs/sch_circle.kml")
 sp.tab <- read.csv("outputs/regional/speciesstats_table_20220415.csv")
 effort <- read.csv("data/schmdi_cbceffort_20220418.csv")
 tax <- read.csv("data/eBird_Taxonomy_v2021.csv")
+nps.bounds <- readOGR("data/nps_boundary.shp", verbose = F)
 
 
 
@@ -116,6 +111,11 @@ buff2.0 <- fortify(buff2)
 #Subset
 buff2.0[c(14:29),] <- NA
 
+#Filter nps boundaries for just Acadia
+select.bounds <- nps.bounds[nps.bounds@data$UNIT_NAME=="Acadia National Park", ]
+
+
+
 ##Map the data
 #Get base map
 base.map <- get_stamenmap(
@@ -124,29 +124,32 @@ base.map <- get_stamenmap(
   zoom = 11)
 
 #Plot
-png(filename = "outputs/regional/forpub/cbc_study_area.png",
-    width=6, height=6, units="in", res = 600)
-
 ggmap(base.map) +
+  geom_polygon(data = select.bounds, aes(x = long, y = lat, group = group, fill = "forestgreen"),
+               color = "black", alpha = 0.5, size = 0.2, key_glyph = "polygon") +
   geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
-             shape = 21,
-             size = 2.5,
-             color = 'black') +
-  geom_path(data = buff1f, aes(x=long, y=lat), color = "navyblue") +
-  geom_path(data = buff2.0, aes(x=long, y=lat), color = "forestgreen") +
+             shape = 21, size = 2.5, color = 'black') +
+  geom_path(data = buff1f, aes(x=long, y=lat), color = "#3A82CA") +
+  geom_path(data = buff2.0, aes(x=long, y=lat), color = "darkorange") +
   theme_classic(base_size = 14) +
-  ggtitle("Christmas Bird Count Circles") +
   theme(plot.title = element_text(hjust = 0.5),
         axis.ticks = element_blank(),
         axis.text = element_blank(),
         axis.title = element_blank(),
-        legend.position = c(0.79, 0.13),
+        legend.position = c(0.81, 0.095),
+        legend.spacing.y = unit(0, "cm"),
+        legend.key.size = unit(.4, "cm"),
+        legend.key.width = unit(.9,"cm"),
+        legend.title = element_blank(),
+        legend.text = element_text(family = "Times New Roman"),
         legend.background = element_rect(fill = "white", color = "black"),
         panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
-  scale_fill_manual("CBC circle", values = c("navyblue", "forestgreen")) +
-  ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
+  scale_fill_manual("", values = c("forestgreen", "#3A82CA", "darkorange"),
+                    label = c("Acadia National Park", "MDI CBC circle", "Schoodic CBC circle")) #+
+  #ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
 
-dev.off()
+ggsave("outputs/regional/forpub/cbc_study_area.png", height = 6, width = 6)
+
 
 
 
@@ -353,51 +356,95 @@ dev.off()
 
 
 #------------------------------------------------#
-####             SRC Test Plots               ####
+####       SRC/linear regression Plots        ####
 #------------------------------------------------#
 
 rm.out <- T2 %>% 
   filter(Year!=2001)
 
 ##Number of species by Year
-png(filename = "outputs/regional/forpub/spbyyear.png",
-    width=8.5, height=6, units="in", res = 600)
-
 ggscatterstats(data = rm.out, x = Year, y = NoSpecies, 
                type = "spearman",
                title = "Number of species by year",
                ylab = "No. of species",
                ggtheme = theme_classic())
 
-dev.off()
+T2 %>% 
+  ggplot(aes(Year, NoSpecies)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "black") +
+  theme_bw() +
+  labs(y="Number of species", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+
+ggsave("outputs/regional/forpub/species_year_regression.png", height = 5, width = 7)
+
 
 
 
 ##Number of birds by Year
-png(filename = "outputs/regional/forpub/birdsbyyear.png",
-    width=8.5, height=6, units="in", res = 600)
-
 ggscatterstats(data = T2, x = Year, y = Birds, 
                type = "spearman",
                title = "Total count of birds by year",
                ylab = "Total count of birds",
                ggtheme = theme_classic())
 
-dev.off()
+T2 %>% 
+  ggplot(aes(Year, Birds)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "black", na.rm = TRUE) +
+  theme_bw() +
+  labs(y="Number of birds", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(2000,17000)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+
+ggsave("outputs/regional/forpub/totalcount_year_regression.png", height = 5, width = 7)
+
 
 
 
 ##Number of birds/partyhour by Year
-png(filename = "outputs/regional/forpub/birdspartyhour_byyear.png",
-    width=8.5, height=6, units="in", res = 600)
-
 ggscatterstats(data = T2, x = Year, y = BirdsPartyHour, 
                type = "spearman",
                title = "Total count of birds/party hour by year",
                ylab = "Total count/party hour",
                ggtheme = theme_classic())
 
-dev.off()
+T2 %>% 
+  ggplot(aes(Year, BirdsPartyHour)) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  geom_smooth(method = "lm", color = "black", na.rm = TRUE) +
+  theme_bw() +
+  labs(y="Number of birds/party hour", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,550)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black"),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+
+ggsave("outputs/regional/forpub/birdsphr_year_regression.png", height = 5, width = 7)
 
 
 
@@ -584,5 +631,6 @@ tax.table <- left_join(sp, tax2, by = 'Common name')
 
 #Write
 #write.csv(tax.table, "outputs/regional/forpub/allspecies_taxonomytable.csv")
+
 
 
