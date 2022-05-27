@@ -145,6 +145,14 @@ effort %>%
   summarise(mean = mean(mean.participants), sd = sd(mean.participants))
 
 
+#Total party hours and participants
+effort %>% 
+  as_tibble %>% 
+  select(count.num, sum.participants, sum.hours) %>% 
+  summarise(tot.participants = sum(sum.participants),
+            tot.hours = sum(sum.hours))
+
+
 #Mean species across all years
 T2 %>% 
   summarise(mean = mean(NoSpecies), sd = sd(NoSpecies))
@@ -379,7 +387,7 @@ T1.1 %>%
 
 #Remove those with n = not enough
 fsub <- F1 %>% 
-  filter(Freq > 2)
+  filter(Freq > 9)
 
 #Create input for purrr loop
 species <- unique(fsub$CommonName) 
@@ -410,26 +418,27 @@ sp.stats <- as.data.frame(do.call(rbind, output))
 colnames(sp.stats) <- c("species", "count.est", "count.p", "cph.est", "cph.p")
 
 #Round the numbers to look simpler/cleaner
-sp.stats$count.est <- round(as.numeric(sp.stats$count.est), digits = 3)
-sp.stats$count.p <- round(as.numeric(sp.stats$count.p), digits = 3)
-sp.stats$cph.est <- round(as.numeric(sp.stats$cph.est), digits = 3)
-sp.stats$cph.p <- round(as.numeric(sp.stats$cph.p), digits = 3)
+sp.stats2 <- sp.stats %>% 
+  mutate(count.est = round(as.numeric(count.est), digits = 3),
+         count.p = round(as.numeric(count.p), digits = 3),
+         cph.est = round(as.numeric(cph.est), digits = 3),
+         cph.p = round(as.numeric(cph.p), digits = 3))
 
 #Determine the significant relationships
-sig <- sp.stats %>% 
+sig <- sp.stats2 %>% 
   filter(cph.p < 0.05)
 
+#Denote change category
 sig$change <- ifelse(sig$cph.est > 0, "increase", "decrease")
 sig.ch <- sig %>% select(species, change)
 
-sp.stats2 <- left_join(sp.stats, sig.ch, by = "species")
+sp.stats3 <- left_join(sp.stats2, sig.ch, by = "species")
 
-sp.stats2$change[is.na(sp.stats2$change)] <- "no change"
-sp.stats2$change[is.na(sp.stats2$count.p)] <- "not enough data"
+sp.stats3$change[is.na(sp.stats3$change)] <- "no change"
 
-
+#Add in species with not enough data
 fmis <- F1 %>% 
-  filter(Freq <= 2) %>% 
+  filter(Freq <= 9) %>% 
   mutate(count.est = NA,
          count.p = NA,
          cph.est = NA,
@@ -438,23 +447,30 @@ fmis <- F1 %>%
   select(CommonName, count.est, count.p, cph.est, cph.p, change) %>% 
   rename(species=CommonName)
 
-sp.stats3 <- bind_rows(sp.stats2, fmis)
+#Bind and arrange for final output
+sp.stats4 <- bind_rows(sp.stats3, fmis) %>% 
+  arrange(change, species)
 
-sp.stats3 <- sp.stats3 %>% arrange(change, species)
 
-#write.csv(sp.stats3, "outputs/regional/speciesstats_table_20220415.csv", row.names = F)
+#write.csv(sp.stats4, "outputs/regional/forpub/speciesstats_table_20220526.csv", row.names = F)
 
+
+
+##Family summary table
+#Get taxomony
 tax2 <- tax %>%
   as_tibble() %>% 
   rename(species=PRIMARY_COM_NAME, family=FAMILY) %>% 
   select(species, family)
 
-
-##Family summary table
-famstat <- sp.stats3 %>% 
-  left_join(tax2, by = "species", all.y=F) %>% 
+#Create table
+famstat <- sp.stats4 %>% 
   as_tibble() %>% 
-  group_by(family) %>% 
+  mutate(species = str_replace(species, "Gray Jay", "Canada Jay"),
+         species = str_replace(species, "Ring-necked duck", "Ring-necked Duck")) %>% 
+  left_join(tax2, by = "species", all.y=F) %>% 
+  group_by(family) %>%
+  mutate(family = ifelse(length(family) < 3, "Other", paste(family))) %>%
   summarise(num.species = length(species),
             n.decrease = length(which(change == "decrease")),
             n.increase = length(which(change == "increase")),
@@ -464,9 +480,10 @@ famstat <- sp.stats3 %>%
             percent.inc = 100*n.increase/num.species,
             percent.nc = 100*n.nochange/num.species,
             percent.na = 100*n.na/num.species) %>% 
-  select(-c(n.decrease, n.increase, n.nochange, n.na))
+  select(-c(n.decrease, n.increase, n.nochange, n.na)) %>% 
+  arrange(desc(num.species))
 
-#write.csv(famstat, "outputs/regional/forpub/familystats_table_20220516.csv", row.names = F)
+#write.csv(famstat, "outputs/regional/forpub/familystats_table_20220526.csv", row.names = F)
 
 
 
@@ -501,6 +518,50 @@ cor.test(post80$year, post80$mean.hours, method = "spearman")
 #Participants over time
 summary(lm(mean.participants ~ year, post80))
 cor.test(post80$year, post80$mean.participants, method = "spearman")
+
+
+
+#-------------------------------------#
+
+
+##Run again, but with totals
+#Alter effort for analysis
+eff <- effort %>% 
+  as_tibble() %>% 
+  select(year, mdi.participants, sch.participants, mdi.hours, sch.hours) %>% 
+  mutate(mdi.participants = replace_na(mdi.participants, 0),
+         mdi.hours = replace_na(mdi.hours, 0),
+         participants = mdi.participants + sch.participants, 
+         partyhours = mdi.hours + sch.hours) %>% 
+  select(year, participants, partyhours)
+
+
+#Party hour over time
+summary(lm(partyhours ~ year, eff))
+cor.test(eff$year, eff$partyhours, method="spearman")
+
+
+#Participants over time
+summary(lm(participants ~ year, eff))
+cor.test(eff$year, eff$participants, method="spearman")
+
+
+##Check 1990 on
+#filter
+p80 <- eff %>% 
+  select(year, partyhours, participants) %>% 
+  filter(year >= 1990) %>% 
+  as_tibble()
+
+
+#Party hour over time
+summary(lm(partyhours ~ year, p80))
+cor.test(p80$year, p80$partyhours, method="spearman")
+
+
+#Participants over time
+summary(lm(participants ~ year, p80))
+cor.test(p80$year, p80$participants, method="spearman")
 
 
 

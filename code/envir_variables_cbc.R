@@ -11,6 +11,7 @@ require(googledrive)
 require(weathermetrics)
 require(udunits2)
 require(cowplot)
+require(broom)
 
 
 
@@ -43,10 +44,10 @@ dec.min.temp <- read.csv("data/dec_min_temp.csv") %>% as_tibble()
 precip.change <- read.csv("data/precip_change.csv") %>% as_tibble()
 sea.surface.temp <- read.csv("data/sea_surface_temp.csv") %>% as_tibble()
 temp.change <- read.csv("data/temp_change.csv") %>% as_tibble()
-tidal.area <- read.csv("data/tidal_area.csv") %>% as_tibble()
+#tidal.area <- read.csv("data/tidal_area.csv") %>% as_tibble()
 urban.area <- read.csv("data/urban_area.csv") %>% as_tibble()
 sea.level <- read_delim("data/tide_rawdata.txt", delim = ";", col_names = 
-             c("yearday", "mean.sl", "xa",  "xb")) #full date range
+             c("yearday", "mean.sl", "xa",  "xb")) #Can probably use this instead of mudflat area
 
 
 
@@ -55,49 +56,22 @@ sea.level <- read_delim("data/tide_rawdata.txt", delim = ";", col_names =
 ####            Data manipulation             ####
 #------------------------------------------------#
 
-##December minimum temperature - - ERROR IN THE GOOGLE EARTH ENGINE CODE OR SOMETHING
-#Pivot data into long format
-dec.min.temp <- dec.min.temp %>%
-  select(-c(system.index, `.geo`)) %>% 
-  pivot_longer(X197101_tmmn:X202112_tmmn)
-
-#Gather date from the names column
-dec.min.temp[c('dat', 'trash')] <- str_split_fixed(dec.min.temp$name, '_', 2)
-dec.min.temp[c('trash2', 'year_month')] <- str_split_fixed(dec.min.temp$dat, 'X', 2)
-dec.min.temp[c('trash3', 'month')] <- str_split_fixed(dec.min.temp$year_month, "^\\d\\d\\d.", 2)
-dec.min.temp[c('year', 'trash4')] <- str_split_fixed(dec.min.temp$year_month, "\\d\\d$", 2)
-
-#Clean to get December mins for each year
-dec.minT <- dec.min.temp %>% 
-  filter(month == 12) %>% 
-  select(year, value) %>% 
-  rename(temp = value)
-
-#Convert to Fahrenheit
-dec.minT$temp <- celsius.to.fahrenheit(dec.minT$temp, round = 2)
-
-
-
-
-##Annual precipitation - - ERROR IN THE GOOGLE EARTH ENGINE CODE OR SOMETHING
+##Annual precipitation -- unit = cm
 #Pivot data into long format
 precip.changes <- precip.change %>%
-  select(-c(system.index, `.geo`)) %>% 
-  pivot_longer(X197101_pr:X202112_pr)
+  mutate(year = as.numeric(str_replace(date, "\\d\\d$", "")),
+         month = str_replace(date, "^\\d\\d\\d\\d", "")) %>% 
+  select(-date) %>% 
+  select(year, month, precip) %>% 
+  filter(year < 2022) %>% 
+  group_by(year) %>% 
+  summarise(mean.precip = sum(precip)) %>% 
+  mutate(mean.precip = inches_to_metric(mean.precip, round = 2, unit = "cm"))
 
-#Gather date from the names column
-precip.changes[c('dat', 'trash')] <- str_split_fixed(precip.changes$name, '_', 2)
-precip.changes[c('trash2', 'year_month')] <- str_split_fixed(precip.changes$dat, 'X', 2)
-precip.changes[c('trash3', 'month')] <- str_split_fixed(precip.changes$year_month, "^\\d\\d\\d.", 2)
-precip.changes[c('year', 'trash4')] <- str_split_fixed(precip.changes$year_month, "\\d\\d$", 2)
-
-#Clean to get accumulated precip for each month
-ann.precip <- precip.changes %>% 
-  select(year, month, year_month, value) %>% 
-  rename(precip=value)
-
-#Convert units to inches
-ann.precip$precip <- udunits2::ud.convert(ann.precip$precip, "mm", "in")
+precip.changes %>% 
+  ggplot(aes(x=year, y=mean.precip)) +
+  geom_point() +
+  geom_smooth(method = "lm")
 
 
 
@@ -121,44 +95,32 @@ ocean.temp <- sea.surf.temp %>%
   rename(temp=value) %>% 
   group_by(year, month) %>% 
   summarise(temp.k = mean(temp, na.rm=T)) %>% 
-  filter(year!=1981)
+  filter(year!=1981) %>% 
+  mutate(temp = ifelse(temp.k >= 0, temp.k / 273.15, temp.k / 273.15),
+         temp.f = kelvin.to.fahrenheit(temp, round = 2))
 
 #Convert units to Fahrenheit
-ocean_temp$temp.f <- kelvin.to.fahrenheit(ocean.temp$temp.k, round = 2)
+ocean.temp$temp <- kelvin.to.fahrenheit(ocean.temp$temp.k, round = 2)
 
 
 
 
-##Annual temperature
+##Annual temperature -- unit = C
 #Pivot data into long format
 temp.changes <- temp.change %>%
-  select(-c(system.index, `.geo`)) %>% 
-  pivot_longer(X19790102_mean_2m_air_temperature:X20200709_mean_2m_air_temperature)
-
-#Gather date from the names column
-temp.changes[c('dat', 'trash')] <- str_split_fixed(temp.changes$name, '_', 2)
-temp.changes[c('trash2', 'year_month_day')] <- str_split_fixed(temp.changes$dat, 'X', 2)
-temp.changes[c('trash3', 'monthday')] <- str_split_fixed(temp.changes$year_month_day, "^\\d\\d\\d.", 2)
-temp.changes[c('month', 'motrash')] <- str_split_fixed(temp.changes$monthday, "\\d\\d$", 2)
-temp.changes[c('year', 'trash4')] <- str_split_fixed(temp.changes$year_month_day, "\\d\\d\\d\\d$", 2)
-
-#Clean to get temps for each month for all years
-ann.temps <- temp.changes %>% 
-  select(name, year, month, value) %>% 
-  rename(temp=value) %>% 
-  group_by(year, month) %>% 
-  summarise(temp.k = mean(temp, na.rm=T)) %>% 
-  mutate(year = as.numeric(year))
-
-#Convert units to fahrenheit
-ann.temps$temp.f <- kelvin.to.fahrenheit(ann.temps$temp.k, round = 2)
+  mutate(year = as.numeric(str_replace(date, "\\d\\d$", "")),
+         month = str_replace(date, "^\\d\\d\\d\\d", "")) %>% 
+  select(-date) %>% 
+  select(year, month, temp) %>% 
+  filter(year < 2022) %>% 
+  mutate(temp = fahrenheit.to.celsius(temp, round = 2))
 
 #Take annual means
-ann.tempF <- ann.temps %>% 
+ann.temp <- temp.changes %>% 
   group_by(year) %>% 
-  summarise(mean.temp = mean(temp.f))
+  summarise(mean.temp = mean(temp))
 
-ann.tempF %>% 
+ann.temp %>% 
   ggplot(aes(x=year, y=mean.temp)) +
   geom_point() +
   geom_smooth(method = "lm")
@@ -166,54 +128,65 @@ ann.tempF %>%
 
 
 
-##December temperature changes
+##December temperature changes -- unit = C
 #Use the temp.changes df
 #Clean and simplify to get December only data by year
 dec.temp <- temp.changes %>% 
-  group_by(year, month) %>% 
-  summarise(temp.k = mean(value, na.rm = T)) %>% 
-  select(year, month, temp.k) %>% 
-  filter(year!=2020 & month == 12) %>% 
-  mutate(year = as.numeric(year))
-
-#Convert temperature -- Something doesn't seem right with these temps??
-dec.temp$temp.f <- kelvin.to.fahrenheit(dec.temp$temp.k)
+  filter(month == 12)
 
 dec.temp %>% 
-  ggplot(aes(x=year, y=temp.f)) +
+  ggplot(aes(x=year, y=temp)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth(method = "lm")
 
 
 
 
-##Tidal area change over time
-#Pivot to long format
-tide.zone <- tidal.area %>%
-  select(-c(system.index, `.geo`)) %>% 
-  pivot_longer(X1984.1986_classification:X2014.2016_classification)
+##December minimum temperature -- units = C
+#Clean to get December mins for each year
+dec.mins <- dec.min.temp %>%
+  mutate(year = as.numeric(str_replace(date, "\\d\\d$", "")),
+         month = str_replace(date, "^\\d\\d\\d\\d", ""),
+         temp = fahrenheit.to.celsius(temp, round = 2)) %>% 
+  select(-date) %>% 
+  select(year, month, temp) %>% 
+  filter(year < 2022)
 
-#Get year and month out of the name column
-tide.zone[c('dat', 'trash')] <- str_split_fixed(tide.zone$name, '_', 2)
-tide.zone[c('trash2', 'year')] <- str_split_fixed(tide.zone$dat, 'X', 2)
-
-#Clean and simplify to get December only data by year
-mudflat.area <- tide.zone %>% 
-  select(name, year, value) %>% 
-  rename(area = value) %>% 
-  mutate(year = str_replace(year, "\\.\\d*$", ""),
-         year = as.numeric(year)) %>% 
-  select(-name)
-
-mudflat.area %>% 
-  ggplot(aes(x=year, y=area)) +
+dec.mins %>% 
+  ggplot(aes(x=year, y=temp)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth(method = "lm")
 
 
 
 
-##Urban area change over time
+# ##Tidal area change over time
+# #Pivot to long format
+# tide.zone <- tidal.area %>%
+#   select(-c(system.index, `.geo`)) %>% 
+#   pivot_longer(X1984.1986_classification:X2014.2016_classification)
+# 
+# #Get year and month out of the name column
+# tide.zone[c('dat', 'trash')] <- str_split_fixed(tide.zone$name, '_', 2)
+# tide.zone[c('trash2', 'year')] <- str_split_fixed(tide.zone$dat, 'X', 2)
+# 
+# #Clean and simplify to get December only data by year
+# mudflat.area <- tide.zone %>% 
+#   select(name, year, value) %>% 
+#   rename(area = value) %>% 
+#   mutate(year = str_replace(year, "\\.\\d*$", ""),
+#          year = as.numeric(year)) %>% 
+#   select(-name)
+# 
+# mudflat.area %>% 
+#   ggplot(aes(x=year, y=area)) +
+#   geom_point() +
+#   geom_smooth()
+
+
+
+
+##Urban area change over time -- units = square kilometers
 #Pivot to long format
 urban.zone <- urban.area %>%
   select(-c(system.index, `.geo`)) %>% 
@@ -229,28 +202,34 @@ urbanized.area <- urban.zone %>%
   rename(area = value) %>% 
   filter(type == "impervious") %>% 
   select(-type) %>% 
-  mutate(year = as.numeric(year))
+  mutate(year = as.numeric(year),
+         area = area/100)
 
 urbanized.area %>% 
   ggplot(aes(x=year, y=area)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth(method = "lm", color = "black")
 
 
 
-##Sea level change
+
+##Sea level change -- units = mm
+#Clean
 sea.rise <- sea.level %>% 
   select(-c(xa, xb)) %>% 
   mutate(yearday = trimws(yearday),
          mean.sl = trimws(mean.sl),
          mean.sl = as.numeric(mean.sl),
          year = as.integer(yearday)) %>% 
-  filter(year > 1970 & mean.sl > 0)
+         #mean.sl = mean.sl/1000) %>% 
+  filter(year > 1970 & mean.sl > 0) %>% 
+  group_by(year) %>% 
+  summarise(mean.sl = mean(mean.sl))
 
 sea.rise %>% 
   ggplot(aes(x=year, y=mean.sl)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth(method = "lm")
 
 
 
@@ -259,38 +238,103 @@ sea.rise %>%
 ####            Statistical tests             ####
 #------------------------------------------------#
 
-##Annual mean temp area change over time
-summary(lm(mean.temp~year, data = ann.tempF))
+##Annual mean precipitation change over time
+precip.r <- precip.changes %>% 
+  summarise(reg.results = lm(mean.precip ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Annual precipitation",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
 
-#R2 = 0.124, F(1, 40) = 5.665, p = 0.022
-
-
-
-##December mean temp area change over time
-summary(lm(temp.f~year, data = dec.temp))
-
-#R2 = 0.041, F(1, 39) = 1.652, p = 0.206
-
+#R2 = 0.002, F(1, 49) = 0.075, p = 0.785
 
 
-##Mudflat area change over time
-summary(lm(area~year, data = mudflat.area))
 
-#R2 = 0.496, F(1, 9) = 8.869, p = 0.016
+##Annual mean temp change over time
+ann.temp.r <- ann.temp %>% 
+  summarise(reg.results = lm(mean.temp ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Mean annual temp.",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
+
+#R2 = 0.303, F(1, 49) = 21.29, p < 0.001*
+
+
+
+##December mean temp change over time
+dec.temp.r <- dec.temp %>% 
+  summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Mean December temp.",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
+
+#R2 = 0.095, F(1, 49) = 5.134, p = 0.028*
+
+
+
+##December min temp change over time
+dec.min.r <- dec.mins %>% 
+  summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Minimum December temp.",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
+
+#R2 = 0.113, F(1, 49) = 6.211, p = 0.016*
+
+
+
+# ##Mudflat area change over time
+# summary(lm(area~year, data = mudflat.area))
+# 
+# #R2 = 0.496, F(1, 9) = 8.869, p = 0.016*
 
 
 
 ##Urban area change over time
-summary(lm(area~year, data = urbanized.area))
+urban.r <- urbanized.area %>% 
+  summarise(reg.results = lm(area ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Impervious land cover",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
 
-#R2 = 0.976, F(1, 6) = 248.5, p < 0.001
+#R2 = 0.976, F(1, 6) = 248.5, p < 0.001*
 
 
 
-##Sea level change
-summary(lm(mean.sl ~ year, data = sea.rise))
+##Sea level change over time
+sea.rise.r <- sea.rise %>% 
+  summarise(reg.results = lm(mean.sl ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>% 
+  mutate(env.var = "Sea level",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>% 
+  select(env.var, est, p.value)
 
-#R2 = 0.377, F(1, 521) = 314.7, p < 2.2e-16
+#R2 = 0.653, F(1, 46) = 86.65, p < 0.001*
+
+
+
+
+#------------------------------------------------#
+####            Env. Var. Table               ####
+#------------------------------------------------#
+
+#Compile results into one table and clean
+env.tab <- precip.r %>% 
+  bind_rows(ann.temp.r, dec.temp.r, dec.min.r, urban.r, sea.rise.r) %>% 
+  mutate(supported = ifelse(p.value > 0.05, "no", "yes"),
+         est = round(est, digits = 2))
+
+#write.csv(env.tab, "outputs/regional/forpub/envir_var_table.csv", row.names = F)
 
 
 
@@ -299,7 +343,15 @@ summary(lm(mean.sl ~ year, data = sea.rise))
 ####             Make a cowplot               ####
 #------------------------------------------------#
 
-ann.temp.plot <- ann.tempF %>% 
+ann.precip.plot <- precip.changes %>% 
+  ggplot(aes(x=year, y=mean.precip)) +
+  geom_point(shape = 21, size = 2, color = "black", fill = "white") +
+  geom_smooth(method = "lm", color = "black") +
+  theme_classic() +
+  labs(y = "Mean annual\nprecipiation (in)") +
+  theme(axis.title.x = element_blank())
+
+ann.temp.plot <- ann.temp %>% 
   ggplot(aes(x=year, y=mean.temp)) +
   geom_point(shape = 21, size = 2, color = "black", fill = "white") +
   geom_smooth(method = "lm", color = "red") +
@@ -308,11 +360,19 @@ ann.temp.plot <- ann.tempF %>%
   theme(axis.title.x = element_blank())
 
 dec.temp.plot <- dec.temp %>% 
-  ggplot(aes(x=year, y=temp.f)) +
+  ggplot(aes(x=year, y=temp)) +
   geom_point(shape = 21, size = 2, color = "black", fill = "white") +
-  geom_smooth(method = "lm", color = "black") +
+  geom_smooth(method = "lm", color = "red") +
   theme_classic() +
   labs(y = "Mean December\ntemperature (F)") +
+  theme(axis.title.x = element_blank())
+
+dec.min.plot <- dec.mins %>% 
+  ggplot(aes(x=year, y=temp)) +
+  geom_point(shape = 21, size = 2, color = "black", fill = "white") +
+  geom_smooth(method = "lm", color = "red") +
+  theme_classic() +
+  labs(y = "Min December\ntemperature (F)") +
   theme(axis.title.x = element_blank())
 
 mud.plot <- mudflat.area %>% 
@@ -320,16 +380,16 @@ mud.plot <- mudflat.area %>%
   geom_point(shape = 21, size = 2, color = "black", fill = "white") +
   geom_smooth(method = "lm", color = "red") +
   theme_classic() +
-  labs(y = "Percent of study area\ncovered by mudflat") +
+  labs(y = "Percent cover\nof mudflat") +
   theme(axis.title.x = element_blank())
 
 urb.plot <- urbanized.area %>%
-  mutate(area = area/10000) %>% 
+  mutate(area = area) %>% 
   ggplot(aes(x=year, y=area)) +
   geom_point(shape = 21, size = 2, color = "black", fill = "white") +
   geom_smooth(method = "lm", color = "red") +
   theme_classic() +
-  labs(y = "Urbanized area\n(hectares)") +
+  labs(y = "Urbanized area\n(???)") +
   theme(axis.title.x = element_blank())
 
 sea.lev.plot <- sea.rise %>% 
@@ -340,15 +400,16 @@ sea.lev.plot <- sea.rise %>%
   labs(x = "Year", y = "Sea level\n(m)")
 
 
-
 # plot_grid(ann.temp.plot, dec.temp.plot, mud.plot, urb.plot, sea.lev.plot, 
 #           nrow=3, labels=c('a', 'b', 'c', 'd', 'e'), align = "none")
 
-first <- plot_grid(ann.temp.plot, dec.temp.plot, nrow = 1, labels = c('a', 'b'))
-second <- plot_grid(mud.plot, urb.plot, nrow = 1, labels=c('c', 'd'))
-third <- plot_grid(sea.lev.plot, nrow = 1, labels = 'e')
+first <- plot_grid(ann.precip.plot, ann.temp.plot, nrow = 1, labels = c('a', 'b'))
+second <- plot_grid(dec.temp.plot, dec.min.plot, nrow = 1, labels = c('c', 'd'))
+third <- plot_grid(mud.plot, urb.plot, nrow = 1, labels=c('e', 'f'))
+fourth <- plot_grid(sea.lev.plot, nrow = 1, labels='g')
 
-plot_grid(first, second, third, nrow = 3, rel_heights = c(1,1,1.5))
+
+plot_grid(first, second, third, fourth, nrow = 4, rel_heights = c(1,1,1,1.5), align = "v")
 
 
 ggsave("outputs/regional/forpub/envir_var_table.png", height = 8.5, width = 11)
