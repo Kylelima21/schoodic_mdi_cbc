@@ -1,22 +1,17 @@
-#Regional CBC analysis for ANP and surrounding areas - Schoodic Institute at Acadia National Park
-#By Nick Fisichelli 2021, and Kyle Lima 2022
+#Regional CBC analysis for ANP and surrounding areas
+#Schoodic Institute at Acadia National Park 2021, 2022
 
 #------------------------------------------------#
 ####           Packages Required              ####
 #------------------------------------------------#
 
+library(tidyverse)
 library(ggplot2)
-library(dplyr)
-library(utils)
-library(tidyr)
 library(sp)
 library(ggmap)
 library(rgdal)
 library(reshape2)
-library(purrr)
 library(sf)
-
-select <- dplyr::select
 
 
 
@@ -29,6 +24,7 @@ mdi <- read.csv("outputs/mdi/cbcmdi_fulldata_20220402.csv", header = TRUE)
 sch <- read.csv("outputs/sch/cbcsch_fulldata_20220402.csv", header = TRUE)
 Y1 <- data.frame(Year = 2021:1971)
 effort <- read.csv("data/schmdi_cbceffort_20220418.csv")
+tax <- read.csv("data/eBird_Taxonomy_v2021.csv")
 
 
 
@@ -48,12 +44,12 @@ sch <- sch %>%
 cbc <- bind_rows(mdi, sch)
 
 
-
 ##Do calculations
 #Get mean count and party hour
 metr <- cbc %>%
   group_by(CommonName, Year) %>% 
-  summarise(Count=mean(Count), PartyH=mean(PartyHours)) 
+  summarise(Count=mean(Count), 
+            PartyH=mean(PartyHours))
 
 #Party hour is not correct for species only detected in one circle that year, fix
 yh <- metr %>% 
@@ -140,34 +136,51 @@ F1 <- T1.1 %>%
 #------------------------------------------------#
 
 #Mean party hours
-mean.ph <- effort %>% 
+effort %>% 
   summarise(mean = mean(mean.hours), sd = sd(mean.hours))
 
 
 #Mean participants
-mean.p <- effort %>% 
+effort %>% 
   summarise(mean = mean(mean.participants), sd = sd(mean.participants))
 
 
+#Total party hours and participants
+effort %>% 
+  as_tibble %>% 
+  select(count.num, sum.participants, sum.hours) %>% 
+  summarise(tot.participants = sum(sum.participants),
+            tot.hours = sum(sum.hours))
+
+
 #Mean species across all years
-mean.num <- T2 %>% 
+T2 %>% 
   summarise(mean = mean(NoSpecies), sd = sd(NoSpecies))
 
 
 #Mean count across all years
-mean.count <- T2 %>% 
+T2 %>% 
   summarise(mean = mean(Birds), sd = sd(Birds))
 
 
 #Mean count/party hour across all years
-mean.cph <- T2 %>% 
+T2 %>% 
   summarise(mean = mean(BirdsPartyHour), sd = sd(BirdsPartyHour))
 
 
+##Species per decade
 #Number of spp in the last decade
-yep <- T1.1 %>%
-  filter(Year > 2011)
-check <- as.data.frame(unique(yep$CommonName)) #120
+T1.1 %>%
+  filter(Year > 2011) %>% 
+  distinct(CommonName)
+
+T1.1 %>%
+  filter(Year < 1981) %>% 
+  distinct(CommonName)
+
+T1.1 %>%
+  filter(Year > 1981 & Year < 1991) %>% 
+  distinct(CommonName)
 
 
 
@@ -194,9 +207,9 @@ sd(T2$NoSpecies) #6.080828
 T2 %>% 
   ggplot(aes(Year, NoSpecies)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "navyblue") +
+  geom_smooth()+#method = "lm", color = "black") +
   theme_bw() +
-  labs(title="Number of Species by Year", y="Number of species", x="Year") +
+  labs(y="Number of species", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
@@ -206,7 +219,7 @@ T2 %>%
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA))
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
 
 
 #------------------------------------------------#
@@ -240,7 +253,7 @@ sd(T2$Birds) #2596.276
 birddif <- with(T2, Birds[Year<1981] - Birds[Year>2011])
 shapiro.test(birddif) #very much not normal
 
-#Create dataframe of the first and last decades and assign group
+#Create data frame of the first and last decades and assign group
 count.t <- T2 %>% 
   filter(Year>2011 | Year<1981) %>% 
   mutate(group = ifelse(Year>2011, "last", "first"))
@@ -252,10 +265,10 @@ t.test(Birds ~ group, data = count.t, paired = TRUE)
 T2 %>% 
   ggplot(aes(Year, Birds)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
+  geom_smooth()+#method = "lm", color = "black", na.rm = TRUE) +
   theme_bw() +
-  labs(title="Number of Birds by Year", y="Number of birds", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(5000,35000)) +
+  labs(y="Number of birds", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(1000,17000)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black"),
@@ -264,7 +277,7 @@ T2 %>%
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA))
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
 
 
 #------------------------------------------------#
@@ -279,14 +292,13 @@ cor.test(T2$Year, T2$BirdsPartyHour, method="spearman")
 
 m.BirdsPartyHour <- lm(BirdsPartyHour~Year, data=T2)
 summary(m.BirdsPartyHour) #Adjusted R-squared:  0.02728, F-statistic: 2.402 on 1 and 49 DF,  p-value: 0.1276
-
 summary(T2$BirdsPartyHour)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #61.99  122.69  148.70  171.54  194.75  514.75 
 
 sd(T2$BirdsPartyHour) #82.00265
 
-
+summary(lm(BirdsPartyHour ~ Year + I(Year^2), data = T2))
 
 #Test for difference between the two decades
 #Math determining percent decline from 10 year averages
@@ -304,10 +316,10 @@ t.test(BirdsPartyHour ~ group, data = count.t, paired = TRUE)
 T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
+  geom_smooth()+#formula = y ~ x + I(x^2), method = "lm", color = "black", na.rm = TRUE) +
   theme_bw() +
-  labs(title="Number of Birds by Year", y="Number of birds", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,550)) +
+  labs(y="Number of birds", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(0,550)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black"),
@@ -316,7 +328,7 @@ T2 %>%
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA))
+        panel.border = element_rect(color = 'black', fill = NA, size = 1))
 
 
 #------------------------------------------------#
@@ -356,14 +368,26 @@ sum(T3.2$NewSpecies[T3.2$Year >= 1991 & T3.2$Year <= 2000]) #6
 #sum(T3.2$NewSpecies[T3.2$Year > 1970 & T3.2$Year < 1981]) #124
 
 
+##Number of species seen in first and last decade
+T1.1 %>% 
+  filter(Year < 1981) %>% 
+  distinct(CommonName)
+
+T1.1 %>% 
+  filter(Year > 2011) %>% 
+  distinct(CommonName)
+
+
+
 #------------------------------------------------#
+
 
 
 ####Statistical tests for each species
 
 #Remove those with n = not enough
 fsub <- F1 %>% 
-  filter(Freq > 2)
+  filter(Freq > 9)
 
 #Create input for purrr loop
 species <- unique(fsub$CommonName) 
@@ -394,26 +418,27 @@ sp.stats <- as.data.frame(do.call(rbind, output))
 colnames(sp.stats) <- c("species", "count.est", "count.p", "cph.est", "cph.p")
 
 #Round the numbers to look simpler/cleaner
-sp.stats$count.est <- round(as.numeric(sp.stats$count.est), digits = 3)
-sp.stats$count.p <- round(as.numeric(sp.stats$count.p), digits = 3)
-sp.stats$cph.est <- round(as.numeric(sp.stats$cph.est), digits = 3)
-sp.stats$cph.p <- round(as.numeric(sp.stats$cph.p), digits = 3)
+sp.stats2 <- sp.stats %>% 
+  mutate(count.est = round(as.numeric(count.est), digits = 3),
+         count.p = round(as.numeric(count.p), digits = 3),
+         cph.est = round(as.numeric(cph.est), digits = 3),
+         cph.p = round(as.numeric(cph.p), digits = 3))
 
 #Determine the significant relationships
-sig <- sp.stats %>% 
+sig <- sp.stats2 %>% 
   filter(cph.p < 0.05)
 
+#Denote change category
 sig$change <- ifelse(sig$cph.est > 0, "increase", "decrease")
 sig.ch <- sig %>% select(species, change)
 
-sp.stats2 <- left_join(sp.stats, sig.ch, by = "species")
+sp.stats3 <- left_join(sp.stats2, sig.ch, by = "species")
 
-sp.stats2$change[is.na(sp.stats2$change)] <- "no change"
-sp.stats2$change[is.na(sp.stats2$count.p)] <- "not enough data"
+sp.stats3$change[is.na(sp.stats3$change)] <- "no change"
 
-
+#Add in species with not enough data
 fmis <- F1 %>% 
-  filter(Freq <= 2) %>% 
+  filter(Freq <= 9) %>% 
   mutate(count.est = NA,
          count.p = NA,
          cph.est = NA,
@@ -422,11 +447,44 @@ fmis <- F1 %>%
   select(CommonName, count.est, count.p, cph.est, cph.p, change) %>% 
   rename(species=CommonName)
 
-sp.stats3 <- bind_rows(sp.stats2, fmis)
+#Bind and arrange for final output
+sp.stats4 <- bind_rows(sp.stats3, fmis) %>% 
+  arrange(change, species)
 
-sp.stats3 <- sp.stats3 %>% arrange(change, species)
 
-#write.csv(sp.stats3, "outputs/regional/speciesstats_table_20220415.csv", row.names = F)
+#write.csv(sp.stats4, "outputs/regional/forpub/speciesstats_table_20220526.csv", row.names = F)
+
+
+
+##Family summary table
+#Get taxomony
+tax2 <- tax %>%
+  as_tibble() %>% 
+  rename(species=PRIMARY_COM_NAME, family=FAMILY) %>% 
+  select(species, family)
+
+#Create table
+famstat <- sp.stats4 %>% 
+  as_tibble() %>% 
+  mutate(species = str_replace(species, "Gray Jay", "Canada Jay"),
+         species = str_replace(species, "Ring-necked duck", "Ring-necked Duck")) %>% 
+  left_join(tax2, by = "species", all.y=F) %>% 
+  group_by(family) %>%
+  mutate(family = ifelse(length(family) < 3, "Other", paste(family))) %>%
+  summarise(num.species = length(species),
+            n.decrease = length(which(change == "decrease")),
+            n.increase = length(which(change == "increase")),
+            n.nochange = length(which(change == "no change")),
+            n.na = length(which(change == "not enough data")),
+            percent.dec = 100*n.decrease/num.species,
+            percent.inc = 100*n.increase/num.species,
+            percent.nc = 100*n.nochange/num.species,
+            percent.na = 100*n.na/num.species) %>% 
+  select(-c(n.decrease, n.increase, n.nochange, n.na)) %>% 
+  arrange(desc(num.species))
+
+#write.csv(famstat, "outputs/regional/forpub/familystats_table_20220526.csv", row.names = F)
+
 
 
 #------------------------------------------------#
@@ -435,11 +493,76 @@ sp.stats3 <- sp.stats3 %>% arrange(change, species)
 ####Statistical test for trends of effort
 
 #Party hour over time
+summary(lm(mean.hours ~ year, effort))
 cor.test(effort$year, effort$mean.hours, method="spearman")
 
 
 #Participants over time
+summary(lm(mean.participants ~ year, effort))
 cor.test(effort$year, effort$mean.participants, method="spearman")
+
+
+##Check 1990 on
+#filter
+post80 <- effort %>% 
+  select(year, mean.hours, mean.participants) %>% 
+  filter(year >= 1990) %>% 
+  as_tibble()
+
+
+#Party hour over time
+summary(lm(mean.hours ~ year, post80))
+cor.test(post80$year, post80$mean.hours, method = "spearman")
+
+
+#Participants over time
+summary(lm(mean.participants ~ year, post80))
+cor.test(post80$year, post80$mean.participants, method = "spearman")
+
+
+
+#-------------------------------------#
+
+
+##Run again, but with totals
+#Alter effort for analysis
+eff <- effort %>% 
+  as_tibble() %>% 
+  select(year, mdi.participants, sch.participants, mdi.hours, sch.hours) %>% 
+  mutate(mdi.participants = replace_na(mdi.participants, 0),
+         mdi.hours = replace_na(mdi.hours, 0),
+         participants = mdi.participants + sch.participants, 
+         partyhours = mdi.hours + sch.hours) %>% 
+  select(year, participants, partyhours)
+
+
+#Party hour over time
+summary(lm(partyhours ~ year, eff))
+cor.test(eff$year, eff$partyhours, method="spearman")
+
+
+#Participants over time
+summary(lm(participants ~ year, eff))
+cor.test(eff$year, eff$participants, method="spearman")
+
+
+##Check 1990 on
+#filter
+p80 <- eff %>% 
+  select(year, partyhours, participants) %>% 
+  filter(year >= 1990) %>% 
+  as_tibble()
+
+
+#Party hour over time
+summary(lm(partyhours ~ year, p80))
+cor.test(p80$year, p80$partyhours, method="spearman")
+
+
+#Participants over time
+summary(lm(participants ~ year, p80))
+cor.test(p80$year, p80$participants, method="spearman")
+
 
 
 

@@ -274,7 +274,7 @@ T2 %>%
 T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "navyblue", na.rm = TRUE) +
+  geom_smooth(method = "lm", colort = "navyblue", na.rm = TRUE) +
   theme_bw() +
   labs(title="Number of Birds/Party Hour by Year", y="Number of birds/party hour", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(0,550)) +
