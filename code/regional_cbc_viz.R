@@ -30,7 +30,7 @@ effort <- read.csv("data/schmdi_cbceffort_20220418.csv")
 tax <- read.csv("data/eBird_Taxonomy_v2021.csv")
 nps.bounds <- readOGR("data/nps_boundary/nps_boundary.shp")
 cons.land <- readOGR("data/maine_conserved_lands/Maine_Conserved_Lands.shp")
-
+acad <- readOGR("data/ACAD_ParkLands_202004/ACAD_ParkBoundary_PY_202004.shp")
 
 
 #------------------------------------------------#
@@ -121,6 +121,7 @@ cons.land@data$PARCEL_NAM[is.na(cons.land@data$PARCEL_NAM)] = "Unknown"
 select.cons <- cons.land[cons.land@data$PROJECT != "Acadia National Park", ]
 select.cons <- test[test@data$PARCEL_NAM != "Original Reservation", ]
 
+acad.bounds <- spTransform(acad, CRS("+proj=longlat +datum=NAD83 +no_defs"))
 
 ##Map the data
 #Get base map
@@ -133,7 +134,7 @@ base.map <- get_stamenmap(
 ggmap(base.map) +
   geom_polygon(data = select.cons, aes(x = long, y = lat, group = group, fill = "#CC9933"),
                color = "black", alpha = 0.5, size = 0.22) +
-  geom_polygon(data = select.bounds, aes(x = long, y = lat, group = group, fill = "#009900"),
+  geom_polygon(data = acad.bounds, aes(x = long, y = lat, group = group, fill = "#009900"),
                color = "black", alpha = 0.5, size = 0.22) +
   geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
              shape = 21, size = 2.5, color = 'black') +
