@@ -14,6 +14,8 @@ library(rgdal)
 library(cowplot)
 library(sf)
 library(magick)
+library(RColorBrewer)
+
 
 
 
@@ -31,6 +33,8 @@ tax <- read.csv("data/eBird_Taxonomy_v2021.csv")
 nps.bounds <- readOGR("data/nps_boundary/nps_boundary.shp")
 cons.land <- readOGR("data/maine_conserved_lands/Maine_Conserved_Lands.shp")
 acad <- readOGR("data/ACAD_ParkLands_202004/ACAD_ParkBoundary_PY_202004.shp")
+
+
 
 
 #------------------------------------------------#
@@ -76,6 +80,7 @@ F1 <- T2.0 %>%
             MaxYear=max(Year))
 
 F1$TotBirdsPH <- round(F1$TotBirdsPH, digits = 3)
+
 
 
 
@@ -258,8 +263,9 @@ eff <- effort %>%
 #Participant plot
 part <- eff %>% 
   ggplot(aes(year, participants)) +
-  geom_point(size = 1, color = "black") +
-  geom_line(color = "black", size = .5) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  #geom_line(color = "black", size = .5) +
+  geom_smooth(method = "loess", color = "black", span = 1.5) +
   theme_bw() +
   labs(y="Participants (n)", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,2), limits = c(10,80)) +
@@ -277,8 +283,9 @@ part <- eff %>%
 #Party hour plot
 hour <- eff %>% 
   ggplot(aes(year, partyhours)) +
-  geom_point(size = 1, color = "black") +
-  geom_line(color = "black", size = .5) +
+  geom_point(shape = 21, size = 1.9, color = "black") +
+  #geom_line(color = "black", size = .5) +
+  geom_smooth(method = "loess", color = "black", span = 1.5) +
   theme_bw() +
   labs(y="Party hours", x="Year") +
   #scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,2), limits = c(10,80)) +
@@ -296,7 +303,7 @@ hour <- eff %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(part, hour, nrow=1, labels=c('a', 'b'), align = "h")
 
-ggsave("outputs/regional/forpub/effort_biplot_20220526.png", height = 5, width = 13)
+ggsave("outputs/regional/forpub/effort_biplot_20220608.png", height = 5, width = 13)
 
 
 
@@ -450,7 +457,7 @@ rm.out <- T2 %>%
 avg.sp <- T2 %>% 
   ggplot(aes(Year, NoSpecies)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "black") +
+  geom_smooth(method = "loess", color = "black", span = 1.5) +
   theme_bw() +
   labs(y="Species/year", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
@@ -468,7 +475,7 @@ avg.sp <- T2 %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(avg.sp, cumul.sp, nrow=1, labels=c('a', 'b'), align = "h")
 
-ggsave("outputs/regional/forpub/speciesnum_biplot_20220526.png", height = 5, width = 13)
+ggsave("outputs/regional/forpub/speciesnum_biplot_20220608.png", height = 5, width = 13)
 
 
 
@@ -483,10 +490,10 @@ ggsave("outputs/regional/forpub/speciesnum_biplot_20220526.png", height = 5, wid
 reg.1 <- T2 %>% 
   ggplot(aes(Year, Birds)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "black", na.rm = TRUE) +
+  geom_smooth(method = "loess", color = "black", span = 1.5) +
   theme_bw() +
   labs(y="Total individual birds", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,0), limits = c(2000,17000)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,0), limits = c(1200,17000)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 14),
@@ -513,11 +520,11 @@ reg.1 <- T2 %>%
 reg.2 <- T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
   geom_point(shape = 21, size = 1.9, color = "black") +
-  geom_smooth(method = "lm", color = "black", na.rm = TRUE) +
+  geom_smooth(method = "loess", color = "black", span = 1.5) +
   #geom_smooth(span = .75, color = "black") +
   theme_bw() +
   labs(y="Birds/party hour", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,550)) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(-10,530)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 14),
@@ -531,7 +538,7 @@ reg.2 <- T2 %>%
 
 plot_grid(reg.1, reg.2, nrow=1, labels=c('a', 'b'), align = "h")
 
-ggsave("outputs/regional/forpub/regression_biplot_20220526.png", height = 5, width = 13)
+ggsave("outputs/regional/forpub/regression_biplot_20220608.png", height = 5, width = 13)
 
 
 
@@ -751,6 +758,11 @@ tax.table <- left_join(sp, tax2, by = 'Common name')
 
 
 
+
+#------------------------------------------------#
+####          Resident/Nonresident            ####
+#------------------------------------------------#
+
 ##Resident Species Change
 #List resident species
 res.sp <- c("Black-capped Chickadee", "Blue Jay", "Common Eider", "Common Grackle",
@@ -776,14 +788,49 @@ resident <- sp.tab %>%
   select(species, change) %>% 
   group_by(change) %>% 
   summarise(n = length(species)) %>% 
-  mutate(percent = n/sum(n)*100)
+  mutate(percent = n/sum(n)*100) %>% 
+  add_row(change = "not analyzed", n = 0, percent = 0.0) %>% 
+  mutate(cat = "resident")
 
 #Write
 #write.csv(resident, "outputs/regional/forpub/resident_species.csv", row.names = F)
 
 
+
+##Nonresident Species Change
+#Determine summary stats
+nonresident <- sp.tab %>% 
+  as_tibble() %>% 
+  filter(!species %in% res.sp) %>% 
+  select(species, change) %>% 
+  group_by(change) %>% 
+  summarise(n = length(species)) %>% 
+  mutate(percent = n/sum(n)*100,
+         change = str_replace(change, "not enough data", "not analyzed"),
+         cat = "nonresident") 
+  
+
+bind_rows(resident, nonresident) %>% 
+  ggplot(aes(y = percent, x = change, fill = cat)) + 
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_text(aes(label = round(percent, 1)), position = position_dodge(width=0.9), vjust = -0.5) +
+  scale_fill_brewer(palette = "Paired") +
+  labs(y = "Percentage (%)") +
+  theme_classic() +
+  theme(axis.text = element_text(color = "black", size = 11),
+        axis.title.y = element_text(color = "black", size = 13),
+        axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.text = element_text(color = "black", size = 11),
+        legend.position = c(0.16, 0.9))
+
+ggsave("outputs/regional/forpub/res_nonres_20220609.png", height = 4.5, width = 6)
+
+
+##Nonresident Species Change
 non.n <- c("European Starling", "House Finch", "House Sparrow", "Rock Pigeon")
 
+#Determine summary stats
 sp.tab %>% 
   as_tibble() %>% 
   filter(species %in% non.n) %>% 
