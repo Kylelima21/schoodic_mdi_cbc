@@ -261,23 +261,28 @@ p.change <- precip.changes %>%
   pivot_wider(values_from = change, names_from = decade) %>%
   summarise(change = last - first)
 
-precip.r <- precip.changes %>% 
-  summarise(reg.results = cor.test(year, mean.precip, method = "spearman", data = .) %>% tidy()) %>% 
-  mutate(env.var = "Annual precipitation",
-         rho = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
-  mutate(change = paste(round(p.change, digits = 2),"cm"),
-         rho = round(rho, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+# precip.r <- precip.changes %>% 
+#   summarise(reg.results = cor.test(year, mean.precip, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Annual precipitation",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(p.change, digits = 2),"cm"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
 
+precip.r <- precip.changes %>% 
   summarise(reg.results = lm(mean.precip ~ year, data = .) %>% tidy()) %>% 
   filter(reg.results$term == "year") %>% 
   mutate(env.var = "Annual precipitation",
          est = reg.results$estimate,
          p.value = reg.results$p.value) %>% 
-  select(env.var, est, p.value)
+  mutate(change = paste(round(p.change, digits = 2),"cm"),
+         est = round(est, digits = 3),
+         p.value = round(p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, change, est, p.value)
 
 #R2 = 0.002, F(1, 49) = 0.075, p = 0.785
 
@@ -294,25 +299,30 @@ at.change <- ann.temp %>%
   pivot_wider(values_from = change, names_from = decade) %>%
   summarise(change = last - first)
 
+# ann.temp.r <- ann.temp %>%
+#   summarise(reg.results = cor.test(year, mean.temp, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Mean annual temp.",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(at.change, digits = 2),"˚C"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
+
 ann.temp.r <- ann.temp %>%
-  summarise(reg.results = cor.test(year, mean.temp, method = "spearman", data = .) %>% tidy()) %>% 
+  summarise(reg.results = lm(mean.temp ~ year, data = .) %>% tidy()) %>%
+  filter(reg.results$term == "year") %>%
   mutate(env.var = "Mean annual temp.",
-         rho = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>%
   mutate(change = paste(round(at.change, digits = 2),"˚C"),
-         rho = round(rho, digits = 3),
+         est = round(est, digits = 3),
          p.value = round(p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+  select(env.var, change, est, p.value)
 
-#   summarise(reg.results = lm(mean.temp ~ year, data = .) %>% tidy()) %>% 
-#   filter(reg.results$term == "year") %>% 
-#   mutate(env.var = "Mean annual temp.",
-#          est = reg.results$estimate,
-#          p.value = reg.results$p.value) %>% 
-#   select(env.var, est, p.value)
-# 
-# #R2 = 0.303, F(1, 49) = 21.29, p < 0.001*
+#R2 = 0.303, F(1, 49) = 21.29, p < 0.001*
 
 
 
@@ -327,23 +337,28 @@ dt.change <- dec.temp %>%
   pivot_wider(values_from = change, names_from = decade) %>%
   summarise(change = last - first)
 
-dec.temp.r <- dec.temp %>% 
-  summarise(reg.results = cor.test(year, temp, method = "spearman", data = .) %>% tidy()) %>% 
-  mutate(env.var = "Mean December temp.",
-         rho = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
-  mutate(change = paste(round(dt.change, digits = 2),"˚C"),
-         rho = round(rho, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+# dec.temp.r <- dec.temp %>% 
+#   summarise(reg.results = cor.test(year, temp, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Mean December temp.",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(dt.change, digits = 2),"˚C"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
   
-  # summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>% 
-  # filter(reg.results$term == "year") %>% 
-  # mutate(env.var = "Mean December temp.",
-  #        est = reg.results$estimate,
-  #        p.value = reg.results$p.value) %>% 
-  # select(env.var, est, p.value)
+dec.temp.r <- dec.temp %>% 
+  summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>%
+  filter(reg.results$term == "year") %>%
+  mutate(env.var = "Mean December temp.",
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>%
+  mutate(change = paste(round(dt.change, digits = 2),"˚C"),
+         est = round(est, digits = 3),
+         p.value = round(p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
+  select(env.var, change, est, p.value)
 
 #R2 = 0.095, F(1, 49) = 5.134, p = 0.028*
 
@@ -360,25 +375,30 @@ dm.change <- dec.mins %>%
     pivot_wider(values_from = change, names_from = decade) %>%
     summarise(change = last - first)
   
+# dec.min.r <- dec.mins %>% 
+#   summarise(reg.results = cor.test(year, temp, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Minimum December temp.",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(dm.change, digits = 2),"˚C"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
+
 dec.min.r <- dec.mins %>% 
-  summarise(reg.results = cor.test(year, temp, method = "spearman", data = .) %>% tidy()) %>% 
+  summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>%
+  filter(reg.results$term == "year") %>%
   mutate(env.var = "Minimum December temp.",
-         rho = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>%
   mutate(change = paste(round(dm.change, digits = 2),"˚C"),
-         rho = round(rho, digits = 3),
+         est = round(est, digits = 3),
          p.value = round(p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+  select(env.var, change, est, p.value)
 
-#   summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>% 
-#   filter(reg.results$term == "year") %>% 
-#   mutate(env.var = "Minimum December temp.",
-#          est = reg.results$estimate,
-#          p.value = reg.results$p.value) %>% 
-#   select(env.var, est, p.value)
-# 
-# #R2 = 0.113, F(1, 49) = 6.211, p = 0.016*
+#R2 = 0.113, F(1, 49) = 6.211, p = 0.016*
 
 
 
@@ -425,25 +445,30 @@ sr.change <- sea.rise %>%
   summarise(change = last - first) %>% 
   mutate(change = ud.convert(change, "mm", "cm"))
 
+# sea.rise.r <- sea.rise %>% 
+#   summarise(reg.results = cor.test(year, mean.sl, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Sea level",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(sr.change, digits = 2),"cm"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
+
 sea.rise.r <- sea.rise %>% 
-  summarise(reg.results = cor.test(year, mean.sl, method = "spearman", data = .) %>% tidy()) %>% 
+  summarise(reg.results = lm(mean.sl ~ year, data = .) %>% tidy()) %>%
+  filter(reg.results$term == "year") %>%
   mutate(env.var = "Sea level",
-         rho = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
+         est = reg.results$estimate,
+         p.value = reg.results$p.value) %>%
   mutate(change = paste(round(sr.change, digits = 2),"cm"),
-         rho = round(rho, digits = 3),
+         est = round(est, digits = 3),
          p.value = round(p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+  select(env.var, change, est, p.value)
 
-#   summarise(reg.results = lm(mean.sl ~ year, data = .) %>% tidy()) %>% 
-#   filter(reg.results$term == "year") %>% 
-#   mutate(env.var = "Sea level",
-#          est = reg.results$estimate,
-#          p.value = reg.results$p.value) %>% 
-#   select(env.var, est, p.value)
-# 
-# #R2 = 0.653, F(1, 46) = 86.65, p < 0.001*
+#R2 = 0.653, F(1, 46) = 86.65, p < 0.001*
 
 
 
@@ -459,18 +484,29 @@ oc.change <- ocean.temp %>%
   summarise(change = last - first)
 
 
+# ocean.temp.r <- ocean.temp %>% 
+#   summarise(reg.results = cor.test(year, mean.sst, method = "spearman", data = .) %>% tidy()) %>% 
+#   mutate(env.var = "Sea suface temp.",
+#          rho = reg.results$estimate,
+#          p.value = reg.results$p.value) %>% 
+#   mutate(change = paste(round(oc.change, digits = 2),"˚C"),
+#          rho = round(rho, digits = 3),
+#          p.value = round(p.value, digits = 3),
+#          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+#   select(env.var, change, rho, p.value)
+
 ocean.temp.r <- ocean.temp %>% 
-  summarise(reg.results = cor.test(year, mean.sst, method = "spearman", data = .) %>% tidy()) %>% 
-  mutate(env.var = "Sea suface temp.",
-         rho = reg.results$estimate,
+  summarise(reg.results = lm(mean.sst ~ year, data = .) %>% tidy()) %>% 
+  filter(reg.results$term == "year") %>%
+  mutate(env.var = "Sea surface temp.",
+         est = reg.results$estimate,
          p.value = reg.results$p.value) %>% 
   mutate(change = paste(round(oc.change, digits = 2),"˚C"),
-         rho = round(rho, digits = 3),
+         est = round(est, digits = 3),
          p.value = round(p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, rho, p.value)
+  select(env.var, change, est, p.value)
 
-#p < 0.001*
 
 
 
@@ -484,7 +520,7 @@ env.tab <- precip.r %>%
   bind_rows(ann.temp.r, dec.temp.r, dec.min.r, sea.rise.r, ocean.temp.r) %>% 
   mutate(supported = ifelse(p.value > 0.05, "no", "yes"))
 
-write.csv(env.tab, "outputs/regional/forpub/envar_table_20220611.csv", row.names = F)
+#write.csv(env.tab, "outputs/regional/forpub/envar_table_20220613.csv", row.names = F)
 
 
 
