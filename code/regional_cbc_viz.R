@@ -810,6 +810,7 @@ nonresident <- sp.tab %>%
          cat = "nonresident") 
   
 
+#Plot Percent
 bind_rows(resident, nonresident) %>% 
   ggplot(aes(y = percent, x = change, fill = cat)) + 
   geom_bar(stat = "identity", position = "dodge", color = "black") +
@@ -827,6 +828,25 @@ bind_rows(resident, nonresident) %>%
 ggsave("outputs/regional/forpub/res_nonres_20220609.png", height = 4.5, width = 6)
 
 
+#Plot raw numbers
+bind_rows(resident, nonresident) %>% 
+  ggplot(aes(y = n, x = change, fill = cat)) + 
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  geom_text(aes(label = n), position = position_dodge(width=0.9), vjust = -0.5) +
+  scale_fill_brewer(palette = "Paired") +
+  labs(y = "Total species") +
+  theme_classic() +
+  theme(axis.text = element_text(color = "black", size = 11),
+        axis.title.y = element_text(color = "black", size = 13),
+        axis.title.x = element_blank(),
+        legend.title = element_blank(),
+        legend.text = element_text(color = "black", size = 11),
+        legend.position = c(0.16, 0.92))
+
+ggsave("outputs/regional/forpub/res_count_20220614.png", height = 4.5, width = 6)
+
+
+
 ##Nonresident Species Change
 non.n <- c("European Starling", "House Finch", "House Sparrow", "Rock Pigeon")
 
@@ -841,3 +861,10 @@ sp.tab %>%
 
 
 
+##New taxonomy/species list table with resident status
+new.tax <- tax.table %>% 
+  as_tibble() %>% 
+  mutate('Resident status' = ifelse(`Common name` %in% res.sp, "Resident", "Non-resident"))
+
+#Write
+#write.csv(new.tax, "outputs/regional/forpub/allspecies_table_20220614.csv", row.names = F)
