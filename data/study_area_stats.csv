@@ -1,0 +1,16 @@
+﻿class.name,group,class.value,pixel.sum
+open water,water,11,355583148.2
+developed open space,developed,21,18389933.41
+developed low intensity,developed,22,19509609.64
+developed medium intensity,developed,23,11017923.04
+developed high intensity,developed,24,2143166.619
+barren land,barren land,31,3156317.548
+deciduous forest,forest,41,17632318.05
+evergreen forest,forest,42,223144634.4
+mixed forest,forest,43,101748226.3
+shrub scrub,shrub,52,11772452.96
+grassland herbaceous,grassland,71,16911032.34
+pasture hay,pasture cropland,81,1291192.727
+cultivated crops,pasture cropland,82,597732.6388
+woody wetlands,wetlands,90,54145838.24
+emergent herbaceous wetlands,wetlands,95,21675251.03

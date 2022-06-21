@@ -40,6 +40,7 @@ require(broom)
 #------------------------------------------------#
 
 #Read in the files
+sa.stat <- read.csv("data/study_area_stats.csv")
 dec.min.temp <- read.csv("data/dec_min_temp.csv") %>% as_tibble()
 precip.change <- read.csv("data/precip_change.csv") %>% as_tibble()
 #sea.surface.temp <- read.csv("data/sea_surface_temp.csv") %>% as_tibble()
@@ -56,6 +57,39 @@ sea.level <- read_delim("data/tide_rawdata.txt", delim = ";", col_names =
 #------------------------------------------------#
 ####            Data manipulation             ####
 #------------------------------------------------#
+
+#Running study area statistics
+a <- sa.stat %>% 
+  mutate(percent = round((pixel.sum/sum(pixel.sum)*100), 2)) %>% 
+  arrange(desc(percent)) %>% 
+  select(class.name, percent)
+
+b <- sa.stat %>% 
+  group_by(group) %>% 
+  summarise(pixel.sum = sum(pixel.sum)) %>% 
+  mutate(percent = round((pixel.sum/sum(pixel.sum)*100), 2)) %>% 
+  select(class.name = group, percent) %>% 
+  arrange(desc(percent))
+
+c <- sa.stat %>%
+  filter(group == "developed") %>% 
+  mutate(percent = round((pixel.sum/sum(pixel.sum)*100), 2)) %>% 
+  select(class.name, percent) %>% 
+  arrange(desc(percent))
+
+d <- sa.stat %>%
+  filter(group == "forest") %>% 
+  mutate(percent = round((pixel.sum/sum(pixel.sum)*100), 2)) %>% 
+  select(class.name, percent) %>% 
+  arrange(desc(percent))
+  
+#Bind all the groups we are interested in
+final.sa.stats <- bind_rows(a, b, c, d)
+
+#write_csv(final.sa.stats, "outputs/regional/forpub/final_study_area_stats.csv")
+
+
+
 
 ##Annual precipitation -- unit = cm
 #Pivot data into long format
