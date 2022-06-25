@@ -1,0 +1,7 @@
+Variable,Intercept,Estimate,Standard error,t statistic,p value,1971,2021
+Annual precipitation,22.373,0.05,0.184,0.274,0.785,120.92,123.42
+Mean annual temp.,-49.425,0.028,0.006,4.615,< 0.001*,5.76,7.16
+Mean December temp.,-106.634,0.052,0.023,2.267,0.028*,-4.14,-1.54
+Minimum December temp.,-140.005,0.066,0.026,2.492,0.016*,-9.92,-6.62
+Sea level,2484.599,2.324,0.25,9.309,< 0.001*,706.52,718.14
+Sea surface temp.,-59.163,0.035,0.005,7.264,< 0.001*,9.82,11.57

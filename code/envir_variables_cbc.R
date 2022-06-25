@@ -308,15 +308,19 @@ p.change <- precip.changes %>%
 
 precip.r <- precip.changes %>% 
   summarise(reg.results = lm(mean.precip ~ year, data = .) %>% tidy()) %>% 
-  filter(reg.results$term == "year") %>% 
   mutate(env.var = "Annual precipitation",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
-  mutate(change = paste(round(p.change, digits = 2),"cm"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, est, p.value)
+  filter(reg.results$term == "year") %>% 
+  # mutate(change = paste(round(p.change, digits = 2),"cm"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 #R2 = 0.002, F(1, 49) = 0.075, p = 0.785
 
@@ -346,15 +350,19 @@ at.change <- ann.temp %>%
 
 ann.temp.r <- ann.temp %>%
   summarise(reg.results = lm(mean.temp ~ year, data = .) %>% tidy()) %>%
-  filter(reg.results$term == "year") %>%
   mutate(env.var = "Mean annual temp.",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>%
-  mutate(change = paste(round(at.change, digits = 2),"˚C"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, est, p.value)
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
+  filter(reg.results$term == "year") %>%
+  # mutate(change = paste(round(at.change, digits = 2),"˚C"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 #R2 = 0.303, F(1, 49) = 21.29, p < 0.001*
 
@@ -384,15 +392,19 @@ dt.change <- dec.temp %>%
   
 dec.temp.r <- dec.temp %>% 
   summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>%
-  filter(reg.results$term == "year") %>%
   mutate(env.var = "Mean December temp.",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>%
-  mutate(change = paste(round(dt.change, digits = 2),"˚C"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
-  select(env.var, change, est, p.value)
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  filter(reg.results$term == "year") %>%
+  # mutate(change = paste(round(dt.change, digits = 2),"˚C"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 #R2 = 0.095, F(1, 49) = 5.134, p = 0.028*
 
@@ -422,15 +434,19 @@ dm.change <- dec.mins %>%
 
 dec.min.r <- dec.mins %>% 
   summarise(reg.results = lm(temp ~ year, data = .) %>% tidy()) %>%
-  filter(reg.results$term == "year") %>%
   mutate(env.var = "Minimum December temp.",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>%
-  mutate(change = paste(round(dm.change, digits = 2),"˚C"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, est, p.value)
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
+  filter(reg.results$term == "year") %>%
+  # mutate(change = paste(round(dm.change, digits = 2),"˚C"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 #R2 = 0.113, F(1, 49) = 6.211, p = 0.016*
 
@@ -492,15 +508,19 @@ sr.change <- sea.rise %>%
 
 sea.rise.r <- sea.rise %>% 
   summarise(reg.results = lm(mean.sl ~ year, data = .) %>% tidy()) %>%
-  filter(reg.results$term == "year") %>%
   mutate(env.var = "Sea level",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>%
-  mutate(change = paste(round(sr.change, digits = 2),"cm"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
-         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, est, p.value)
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
+         p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>%
+  filter(reg.results$term == "year") %>%
+  # mutate(change = paste(round(sr.change, digits = 2),"cm"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 #R2 = 0.653, F(1, 46) = 86.65, p < 0.001*
 
@@ -531,15 +551,19 @@ oc.change <- ocean.temp %>%
 
 ocean.temp.r <- ocean.temp %>% 
   summarise(reg.results = lm(mean.sst ~ year, data = .) %>% tidy()) %>% 
-  filter(reg.results$term == "year") %>%
   mutate(env.var = "Sea surface temp.",
-         est = reg.results$estimate,
-         p.value = reg.results$p.value) %>% 
-  mutate(change = paste(round(oc.change, digits = 2),"˚C"),
-         est = round(est, digits = 3),
-         p.value = round(p.value, digits = 3),
+         intercept = round(reg.results$estimate[1], digits = 3),
+         est = round(reg.results$estimate, digits = 3),
+         error = round(reg.results$std.error, digits = 3),
+         t.stat = round(reg.results$statistic, digits = 3),
+         p.value = round(reg.results$p.value, digits = 3),
          p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
-  select(env.var, change, est, p.value)
+  filter(reg.results$term == "year") %>%
+  # mutate(change = paste(round(oc.change, digits = 2),"˚C"),
+  #        est = round(est, digits = 3),
+  #        p.value = round(p.value, digits = 3),
+  #        p.value = ifelse(p.value < 0.001, "< 0.001", paste(p.value))) %>% 
+  select(env.var, intercept, est, error, t.stat, p.value)
 
 
 
@@ -552,9 +576,11 @@ ocean.temp.r <- ocean.temp %>%
 #Compile results into one table and clean
 env.tab <- precip.r %>% 
   bind_rows(ann.temp.r, dec.temp.r, dec.min.r, sea.rise.r, ocean.temp.r) %>% 
-  mutate(supported = ifelse(p.value > 0.05, "no", "yes"))
+  mutate(#supported = ifelse(p.value > 0.05, "no", "yes"))
+         value1 = intercept + est * 1971,
+         value2 = intercept + est * 2021)
 
-#write.csv(env.tab, "outputs/regional/forpub/envar_table_20220613.csv", row.names = F)
+#write.csv(env.tab, "outputs/regional/forpub/envar_table_20220625.csv", row.names = F)
 
 
 
