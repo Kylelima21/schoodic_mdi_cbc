@@ -49,7 +49,7 @@ temp.change <- read.csv("data/temp_change.csv") %>% as_tibble()
 #tidal.area <- read.csv("data/tidal_area.csv") %>% as_tibble()
 urban.area <- read.csv("data/urban_area.csv") %>% as_tibble()
 sea.level <- read_delim("data/tide_rawdata.txt", delim = ";", col_names = 
-             c("yearday", "mean.sl", "xa",  "xb")) #Can probably use this instead of mudflat area
+             c("yearday", "mean.sl", "xa",  "xb"))
 
 
 
