@@ -1,163 +1,163 @@
-"Common name","Scientific name","Order","Family","Resident status"
-"American Black Duck","Anas rubripes","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"American Crow","Corvus brachyrhynchos","Passeriformes","Corvidae (Crows, Jays, and Magpies)","Resident"
-"American Goldfinch","Spinus tristis","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"American Kestrel","Falco sparverius","Falconiformes","Falconidae (Falcons and Caracaras)","Non-resident"
-"American Pipit","Anthus rubescens","Passeriformes","Motacillidae (Wagtails and Pipits)","Non-resident"
-"American Robin","Turdus migratorius","Passeriformes","Turdidae (Thrushes and Allies)","Resident"
-"American Three-toed Woodpecker","Picoides dorsalis","Piciformes","Picidae (Woodpeckers)","Non-resident"
-"American Tree Sparrow","Spizelloides arborea","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"American Wigeon","Mareca americana","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Atlantic Puffin","Fratercula arctica","Charadriiformes","Alcidae (Auks, Murres, and Puffins)","Non-resident"
-"Bald Eagle","Haliaeetus leucocephalus","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Baltimore Oriole","Icterus galbula","Passeriformes","Icteridae (Troupials and Allies)","Non-resident"
-"Barred Owl","Strix varia","Strigiformes","Strigidae (Owls)","Resident"
-"Barrow's Goldeneye","Bucephala islandica","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Belted Kingfisher","Megaceryle alcyon","Coraciiformes","Alcedinidae (Kingfishers)","Resident"
-"Black Guillemot","Cepphus grylle","Charadriiformes","Alcidae (Auks, Murres, and Puffins)","Resident"
-"Black Scoter","Melanitta americana","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Black-and-white Warbler","Mniotilta varia","Passeriformes","Parulidae (New World Warblers)","Non-resident"
-"Black-backed Woodpecker","Picoides arcticus","Piciformes","Picidae (Woodpeckers)","Non-resident"
-"Black-bellied Plover","Pluvialis squatarola","Charadriiformes","Charadriidae (Plovers and Lapwings)","Non-resident"
-"Black-capped Chickadee","Poecile atricapillus","Passeriformes","Paridae (Tits, Chickadees, and Titmice)","Resident"
-"Black-headed Gull","Chroicocephalus ridibundus","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Black-legged Kittiwake","Rissa tridactyla","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Black-throated Sparrow","Amphispiza bilineata","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Blue Jay","Cyanocitta cristata","Passeriformes","Corvidae (Crows, Jays, and Magpies)","Resident"
-"Bohemian Waxwing","Bombycilla garrulus","Passeriformes","Bombycillidae (Waxwings)","Non-resident"
-"Bonaparte's Gull","Chroicocephalus philadelphia","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Boreal Chickadee","Poecile hudsonicus","Passeriformes","Paridae (Tits, Chickadees, and Titmice)","Non-resident"
-"Brant","Branta bernicla","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Broad-winged Hawk","Buteo platypterus","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Non-resident"
-"Brown Creeper","Certhia americana","Passeriformes","Certhiidae (Treecreepers)","Resident"
-"Brown Thrasher","Toxostoma rufum","Passeriformes","Mimidae (Mockingbirds and Thrashers)","Non-resident"
-"Brown-headed Cowbird","Molothrus ater","Passeriformes","Icteridae (Troupials and Allies)","Non-resident"
-"Bufflehead","Bucephala albeola","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Canada Goose","Branta canadensis","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"Canada Jay","Perisoreus canadensis","Passeriformes","Corvidae (Crows, Jays, and Magpies)","Non-resident"
-"Carolina Wren","Thryothorus ludovicianus","Passeriformes","Troglodytidae (Wrens)","Non-resident"
-"Cedar Waxwing","Bombycilla cedrorum","Passeriformes","Bombycillidae (Waxwings)","Resident"
-"Chipping Sparrow","Spizella passerina","Passeriformes","Passerellidae (New World Sparrows)","Resident"
-"Common Eider","Somateria mollissima","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"Common Goldeneye","Bucephala clangula","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Common Grackle","Quiscalus quiscula","Passeriformes","Icteridae (Troupials and Allies)","Resident"
-"Common Loon","Gavia immer","Gaviiformes","Gaviidae (Loons)","Resident"
-"Common Merganser","Mergus merganser","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"Common Raven","Corvus corax","Passeriformes","Corvidae (Crows, Jays, and Magpies)","Resident"
-"Common Redpoll","Acanthis flammea","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Non-resident"
-"Common Yellowthroat","Geothlypis trichas","Passeriformes","Parulidae (New World Warblers)","Non-resident"
-"Cooper's Hawk","Accipiter cooperii","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Dark-eyed Junco","Junco hyemalis","Passeriformes","Passerellidae (New World Sparrows)","Resident"
-"Dickcissel","Spiza americana","Passeriformes","Cardinalidae (Cardinals and Allies)","Non-resident"
-"Double-crested Cormorant","Nannopterum auritum","Suliformes","Phalacrocoracidae (Cormorants and Shags)","Non-resident"
-"Dovekie","Alle alle","Charadriiformes","Alcidae (Auks, Murres, and Puffins)","Non-resident"
-"Downy Woodpecker","Dryobates pubescens","Piciformes","Picidae (Woodpeckers)","Resident"
-"Dunlin","Calidris alpina","Charadriiformes","Scolopacidae (Sandpipers and Allies)","Non-resident"
-"Eastern Bluebird","Sialia sialis","Passeriformes","Turdidae (Thrushes and Allies)","Non-resident"
-"Eastern Meadowlark","Sturnella magna","Passeriformes","Icteridae (Troupials and Allies)","Non-resident"
-"Eastern Phoebe","Sayornis phoebe","Passeriformes","Tyrannidae (Tyrant Flycatchers)","Non-resident"
-"Eastern Towhee","Pipilo erythrophthalmus","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Eurasian Wigeon","Mareca penelope","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"European Starling","Sturnus vulgaris","Passeriformes","Sturnidae (Starlings)","Resident"
-"Evening Grosbeak","Coccothraustes vespertinus","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Non-resident"
-"Field Sparrow","Spizella pusilla","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Fox Sparrow","Passerella iliaca","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Gadwall","Mareca strepera","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Glaucous Gull","Larus hyperboreus","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Golden-crowned Kinglet","Regulus satrapa","Passeriformes","Regulidae (Kinglets)","Resident"
-"Gray Catbird","Dumetella carolinensis","Passeriformes","Mimidae (Mockingbirds and Thrashers)","Non-resident"
-"Great Black-backed Gull","Larus marinus","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Resident"
-"Great Blue Heron","Ardea herodias","Pelecaniformes","Ardeidae (Herons, Egrets, and Bitterns)","Non-resident"
-"Great Cormorant","Phalacrocorax carbo","Suliformes","Phalacrocoracidae (Cormorants and Shags)","Non-resident"
-"Great Horned Owl","Bubo virginianus","Strigiformes","Strigidae (Owls)","Resident"
-"Greater Scaup","Aythya marila","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Green-tailed Towhee","Pipilo chlorurus","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Green-winged Teal","Anas crecca","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Hairy Woodpecker","Dryobates villosus","Piciformes","Picidae (Woodpeckers)","Resident"
-"Harlequin Duck","Histrionicus histrionicus","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Hermit Thrush","Catharus guttatus","Passeriformes","Turdidae (Thrushes and Allies)","Non-resident"
-"Herring Gull","Larus argentatus","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Resident"
-"Hooded Merganser","Lophodytes cucullatus","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"Horned Grebe","Podiceps auritus","Podicipediformes","Podicipedidae (Grebes)","Non-resident"
-"Horned Lark","Eremophila alpestris","Passeriformes","Alaudidae (Larks)","Non-resident"
-"House Finch","Haemorhous mexicanus","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"House Sparrow","Passer domesticus","Passeriformes","Passeridae (Old World Sparrows)","Resident"
-"Iceland Gull","Larus glaucoides","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Killdeer","Charadrius vociferus","Charadriiformes","Charadriidae (Plovers and Lapwings)","Non-resident"
-"King Eider","Somateria spectabilis","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Lapland Longspur","Calcarius lapponicus","Passeriformes","Calcariidae (Longspurs and Snow Buntings)","Non-resident"
-"Lesser Black-backed Gull","Larus fuscus","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Lesser Scaup","Aythya affinis","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Long-tailed Duck","Clangula hyemalis","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Mallard","Anas platyrhynchos","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Resident"
-"Merlin","Falco columbarius","Falconiformes","Falconidae (Falcons and Caracaras)","Non-resident"
-"Mourning Dove","Zenaida macroura","Columbiformes","Columbidae (Pigeons and Doves)","Resident"
-"Northern Bobwhite","Colinus virginianus","Galliformes","Odontophoridae (New World Quail)","Non-resident"
-"Northern Cardinal","Cardinalis cardinalis","Passeriformes","Cardinalidae (Cardinals and Allies)","Resident"
-"Northern Flicker","Colaptes auratus","Piciformes","Picidae (Woodpeckers)","Resident"
-"Northern Gannet","Morus bassanus","Suliformes","Sulidae (Boobies and Gannets)","Non-resident"
-"Northern Goshawk","Accipiter gentilis","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Northern Harrier","Circus hudsonius","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Northern Hawk Owl","Surnia ulula","Strigiformes","Strigidae (Owls)","Non-resident"
-"Northern Mockingbird","Mimus polyglottos","Passeriformes","Mimidae (Mockingbirds and Thrashers)","Resident"
-"Northern Pintail","Anas acuta","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Northern Saw-whet Owl","Aegolius acadicus","Strigiformes","Strigidae (Owls)","Non-resident"
-"Northern Shrike","Lanius borealis","Passeriformes","Laniidae (Shrikes)","Non-resident"
-"Orange-crowned Warbler","Leiothlypis celata","Passeriformes","Parulidae (New World Warblers)","Non-resident"
-"Pacific Loon","Gavia pacifica","Gaviiformes","Gaviidae (Loons)","Non-resident"
-"Palm Warbler","Setophaga palmarum","Passeriformes","Parulidae (New World Warblers)","Non-resident"
-"Peregrine Falcon","Falco peregrinus","Falconiformes","Falconidae (Falcons and Caracaras)","Resident"
-"Pied-billed Grebe","Podilymbus podiceps","Podicipediformes","Podicipedidae (Grebes)","Non-resident"
-"Pileated Woodpecker","Dryocopus pileatus","Piciformes","Picidae (Woodpeckers)","Resident"
-"Pine Grosbeak","Pinicola enucleator","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Non-resident"
-"Pine Siskin","Spinus pinus","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"Pine Warbler","Setophaga pinus","Passeriformes","Parulidae (New World Warblers)","Non-resident"
-"Purple Finch","Haemorhous purpureus","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"Purple Sandpiper","Calidris maritima","Charadriiformes","Scolopacidae (Sandpipers and Allies)","Non-resident"
-"Razorbill","Alca torda","Charadriiformes","Alcidae (Auks, Murres, and Puffins)","Non-resident"
-"Red Crossbill","Loxia curvirostra","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"Red-bellied Woodpecker","Melanerpes carolinus","Piciformes","Picidae (Woodpeckers)","Non-resident"
-"Red-breasted Merganser","Mergus serrator","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Red-breasted Nuthatch","Sitta canadensis","Passeriformes","Sittidae (Nuthatches)","Resident"
-"Red-headed Woodpecker","Melanerpes erythrocephalus","Piciformes","Picidae (Woodpeckers)","Non-resident"
-"Red-necked Grebe","Podiceps grisegena","Podicipediformes","Podicipedidae (Grebes)","Non-resident"
-"Red-shouldered Hawk","Buteo lineatus","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Non-resident"
-"Red-tailed Hawk","Buteo jamaicensis","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Red-throated Loon","Gavia stellata","Gaviiformes","Gaviidae (Loons)","Non-resident"
-"Red-winged Blackbird","Agelaius phoeniceus","Passeriformes","Icteridae (Troupials and Allies)","Resident"
-"Redhead","Aythya americana","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Ring-billed Gull","Larus delawarensis","Charadriiformes","Laridae (Gulls, Terns, and Skimmers)","Non-resident"
-"Ring-necked Duck","Aythya collaris","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Ring-necked Pheasant","Phasianus colchicus","Galliformes","Phasianidae (Pheasants, Grouse, and Allies)","Non-resident"
-"Rock Pigeon","Columba livia","Columbiformes","Columbidae (Pigeons and Doves)","Resident"
-"Rough-legged Hawk","Buteo lagopus","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Non-resident"
-"Ruby-crowned Kinglet","Corthylio calendula","Passeriformes","Regulidae (Kinglets)","Non-resident"
-"Ruddy Duck","Oxyura jamaicensis","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Ruffed Grouse","Bonasa umbellus","Galliformes","Phasianidae (Pheasants, Grouse, and Allies)","Resident"
-"Rusty Blackbird","Euphagus carolinus","Passeriformes","Icteridae (Troupials and Allies)","Non-resident"
-"Sanderling","Calidris alba","Charadriiformes","Scolopacidae (Sandpipers and Allies)","Non-resident"
-"Sharp-shinned Hawk","Accipiter striatus","Accipitriformes","Accipitridae (Hawks, Eagles, and Kites)","Resident"
-"Short-eared Owl","Asio flammeus","Strigiformes","Strigidae (Owls)","Non-resident"
-"Snow Bunting","Plectrophenax nivalis","Passeriformes","Calcariidae (Longspurs and Snow Buntings)","Non-resident"
-"Snow Goose","Anser caerulescens","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Snowy Owl","Bubo scandiacus","Strigiformes","Strigidae (Owls)","Non-resident"
-"Song Sparrow","Melospiza melodia","Passeriformes","Passerellidae (New World Sparrows)","Resident"
-"Spruce Grouse","Canachites canadensis","Galliformes","Phasianidae (Pheasants, Grouse, and Allies)","Resident"
-"Surf Scoter","Melanitta perspicillata","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Swamp Sparrow","Melospiza georgiana","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"Thick-billed Murre","Uria lomvia","Charadriiformes","Alcidae (Auks, Murres, and Puffins)","Non-resident"
-"Townsend's Solitaire","Myadestes townsendi","Passeriformes","Turdidae (Thrushes and Allies)","Non-resident"
-"Tufted Titmouse","Baeolophus bicolor","Passeriformes","Paridae (Tits, Chickadees, and Titmice)","Resident"
-"Varied Thrush","Ixoreus naevius","Passeriformes","Turdidae (Thrushes and Allies)","Non-resident"
-"Vesper Sparrow","Pooecetes gramineus","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"White-breasted Nuthatch","Sitta carolinensis","Passeriformes","Sittidae (Nuthatches)","Resident"
-"White-crowned Sparrow","Zonotrichia leucophrys","Passeriformes","Passerellidae (New World Sparrows)","Non-resident"
-"White-throated Sparrow","Zonotrichia albicollis","Passeriformes","Passerellidae (New World Sparrows)","Resident"
-"White-winged Crossbill","Loxia leucoptera","Passeriformes","Fringillidae (Finches, Euphonias, and Allies)","Resident"
-"White-winged Scoter","Melanitta deglandi","Anseriformes","Anatidae (Ducks, Geese, and Waterfowl)","Non-resident"
-"Wild Turkey","Meleagris gallopavo","Galliformes","Phasianidae (Pheasants, Grouse, and Allies)","Resident"
-"Wilson's Snipe","Gallinago delicata","Charadriiformes","Scolopacidae (Sandpipers and Allies)","Non-resident"
-"Winter Wren","Troglodytes hiemalis","Passeriformes","Troglodytidae (Wrens)","Non-resident"
-"Yellow-bellied Sapsucker","Sphyrapicus varius","Piciformes","Picidae (Woodpeckers)","Non-resident"
-"Yellow-breasted Chat","Icteria virens","Passeriformes","Icteriidae (Yellow-breasted Chat)","Non-resident"
-"Yellow-rumped Warbler","Setophaga coronata","Passeriformes","Parulidae (New World Warblers)","Resident"
+Common name,Scientific name,Order,Family,Resident status
+American Black Duck,Anas rubripes,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+American Crow,Corvus brachyrhynchos,Passeriformes,"Corvidae (Crows, Jays, and Magpies)",Resident
+American Goldfinch,Spinus tristis,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+American Kestrel,Falco sparverius,Falconiformes,Falconidae (Falcons and Caracaras),Non-resident
+American Pipit,Anthus rubescens,Passeriformes,Motacillidae (Wagtails and Pipits),Non-resident
+American Robin,Turdus migratorius,Passeriformes,Turdidae (Thrushes and Allies),Resident
+American Three-toed Woodpecker,Picoides dorsalis,Piciformes,Picidae (Woodpeckers),Non-resident
+American Tree Sparrow,Spizelloides arborea,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+American Wigeon,Mareca americana,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Atlantic Puffin,Fratercula arctica,Charadriiformes,"Alcidae (Auks, Murres, and Puffins)",Non-resident
+Bald Eagle,Haliaeetus leucocephalus,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Baltimore Oriole,Icterus galbula,Passeriformes,Icteridae (Troupials and Allies),Non-resident
+Barred Owl,Strix varia,Strigiformes,Strigidae (Owls),Resident
+Barrow's Goldeneye,Bucephala islandica,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Belted Kingfisher,Megaceryle alcyon,Coraciiformes,Alcedinidae (Kingfishers),Resident
+Black Guillemot,Cepphus grylle,Charadriiformes,"Alcidae (Auks, Murres, and Puffins)",Resident
+Black Scoter,Melanitta americana,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Black-and-white Warbler,Mniotilta varia,Passeriformes,Parulidae (New World Warblers),Non-resident
+Black-backed Woodpecker,Picoides arcticus,Piciformes,Picidae (Woodpeckers),Non-resident
+Black-bellied Plover,Pluvialis squatarola,Charadriiformes,Charadriidae (Plovers and Lapwings),Non-resident
+Black-capped Chickadee,Poecile atricapillus,Passeriformes,"Paridae (Tits, Chickadees, and Titmice)",Resident
+Black-headed Gull,Chroicocephalus ridibundus,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Black-legged Kittiwake,Rissa tridactyla,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Black-throated Sparrow,Amphispiza bilineata,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Blue Jay,Cyanocitta cristata,Passeriformes,"Corvidae (Crows, Jays, and Magpies)",Resident
+Bohemian Waxwing,Bombycilla garrulus,Passeriformes,Bombycillidae (Waxwings),Non-resident
+Bonaparte's Gull,Chroicocephalus philadelphia,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Boreal Chickadee,Poecile hudsonicus,Passeriformes,"Paridae (Tits, Chickadees, and Titmice)",Non-resident
+Brant,Branta bernicla,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Broad-winged Hawk,Buteo platypterus,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Non-resident
+Brown Creeper,Certhia americana,Passeriformes,Certhiidae (Treecreepers),Resident
+Brown Thrasher,Toxostoma rufum,Passeriformes,Mimidae (Mockingbirds and Thrashers),Non-resident
+Brown-headed Cowbird,Molothrus ater,Passeriformes,Icteridae (Troupials and Allies),Non-resident
+Bufflehead,Bucephala albeola,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Canada Goose,Branta canadensis,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+Canada Jay,Perisoreus canadensis,Passeriformes,"Corvidae (Crows, Jays, and Magpies)",Non-resident
+Carolina Wren,Thryothorus ludovicianus,Passeriformes,Troglodytidae (Wrens),Non-resident
+Cedar Waxwing,Bombycilla cedrorum,Passeriformes,Bombycillidae (Waxwings),Resident
+Chipping Sparrow,Spizella passerina,Passeriformes,Passerellidae (New World Sparrows),Resident
+Common Eider,Somateria mollissima,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+Common Goldeneye,Bucephala clangula,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Common Grackle,Quiscalus quiscula,Passeriformes,Icteridae (Troupials and Allies),Resident
+Common Loon,Gavia immer,Gaviiformes,Gaviidae (Loons),Resident
+Common Merganser,Mergus merganser,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+Common Raven,Corvus corax,Passeriformes,"Corvidae (Crows, Jays, and Magpies)",Resident
+Common Redpoll,Acanthis flammea,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Non-resident
+Common Yellowthroat,Geothlypis trichas,Passeriformes,Parulidae (New World Warblers),Non-resident
+Cooper's Hawk,Accipiter cooperii,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Dark-eyed Junco,Junco hyemalis,Passeriformes,Passerellidae (New World Sparrows),Resident
+Dickcissel,Spiza americana,Passeriformes,Cardinalidae (Cardinals and Allies),Non-resident
+Double-crested Cormorant,Nannopterum auritum,Suliformes,Phalacrocoracidae (Cormorants and Shags),Non-resident
+Dovekie,Alle alle,Charadriiformes,"Alcidae (Auks, Murres, and Puffins)",Non-resident
+Downy Woodpecker,Dryobates pubescens,Piciformes,Picidae (Woodpeckers),Resident
+Dunlin,Calidris alpina,Charadriiformes,Scolopacidae (Sandpipers and Allies),Non-resident
+Eastern Bluebird,Sialia sialis,Passeriformes,Turdidae (Thrushes and Allies),Non-resident
+Eastern Meadowlark,Sturnella magna,Passeriformes,Icteridae (Troupials and Allies),Non-resident
+Eastern Phoebe,Sayornis phoebe,Passeriformes,Tyrannidae (Tyrant Flycatchers),Non-resident
+Eastern Towhee,Pipilo erythrophthalmus,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Eurasian Wigeon,Mareca penelope,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+European Starling,Sturnus vulgaris,Passeriformes,Sturnidae (Starlings),Resident
+Evening Grosbeak,Coccothraustes vespertinus,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Non-resident
+Field Sparrow,Spizella pusilla,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Fox Sparrow,Passerella iliaca,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Gadwall,Mareca strepera,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Glaucous Gull,Larus hyperboreus,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Golden-crowned Kinglet,Regulus satrapa,Passeriformes,Regulidae (Kinglets),Resident
+Gray Catbird,Dumetella carolinensis,Passeriformes,Mimidae (Mockingbirds and Thrashers),Non-resident
+Great Black-backed Gull,Larus marinus,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Resident
+Great Blue Heron,Ardea herodias,Pelecaniformes,"Ardeidae (Herons, Egrets, and Bitterns)",Non-resident
+Great Cormorant,Phalacrocorax carbo,Suliformes,Phalacrocoracidae (Cormorants and Shags),Non-resident
+Great Horned Owl,Bubo virginianus,Strigiformes,Strigidae (Owls),Resident
+Greater Scaup,Aythya marila,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Green-tailed Towhee,Pipilo chlorurus,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Green-winged Teal,Anas crecca,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Hairy Woodpecker,Dryobates villosus,Piciformes,Picidae (Woodpeckers),Resident
+Harlequin Duck,Histrionicus histrionicus,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Hermit Thrush,Catharus guttatus,Passeriformes,Turdidae (Thrushes and Allies),Non-resident
+Herring Gull,Larus argentatus,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Resident
+Hooded Merganser,Lophodytes cucullatus,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+Horned Grebe,Podiceps auritus,Podicipediformes,Podicipedidae (Grebes),Non-resident
+Horned Lark,Eremophila alpestris,Passeriformes,Alaudidae (Larks),Non-resident
+House Finch,Haemorhous mexicanus,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+House Sparrow,Passer domesticus,Passeriformes,Passeridae (Old World Sparrows),Resident
+Iceland Gull,Larus glaucoides,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Killdeer,Charadrius vociferus,Charadriiformes,Charadriidae (Plovers and Lapwings),Non-resident
+King Eider,Somateria spectabilis,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Lapland Longspur,Calcarius lapponicus,Passeriformes,Calcariidae (Longspurs and Snow Buntings),Non-resident
+Lesser Black-backed Gull,Larus fuscus,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Lesser Scaup,Aythya affinis,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Long-tailed Duck,Clangula hyemalis,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Mallard,Anas platyrhynchos,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Resident
+Merlin,Falco columbarius,Falconiformes,Falconidae (Falcons and Caracaras),Non-resident
+Mourning Dove,Zenaida macroura,Columbiformes,Columbidae (Pigeons and Doves),Resident
+Northern Bobwhite,Colinus virginianus,Galliformes,Odontophoridae (New World Quail),Non-resident
+Northern Cardinal,Cardinalis cardinalis,Passeriformes,Cardinalidae (Cardinals and Allies),Resident
+Northern Flicker,Colaptes auratus,Piciformes,Picidae (Woodpeckers),Resident
+Northern Gannet,Morus bassanus,Suliformes,Sulidae (Boobies and Gannets),Non-resident
+Northern Goshawk,Accipiter gentilis,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Northern Harrier,Circus hudsonius,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Northern Hawk Owl,Surnia ulula,Strigiformes,Strigidae (Owls),Non-resident
+Northern Mockingbird,Mimus polyglottos,Passeriformes,Mimidae (Mockingbirds and Thrashers),Resident
+Northern Pintail,Anas acuta,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Northern Saw-whet Owl,Aegolius acadicus,Strigiformes,Strigidae (Owls),Non-resident
+Northern Shrike,Lanius borealis,Passeriformes,Laniidae (Shrikes),Non-resident
+Orange-crowned Warbler,Leiothlypis celata,Passeriformes,Parulidae (New World Warblers),Non-resident
+Pacific Loon,Gavia pacifica,Gaviiformes,Gaviidae (Loons),Non-resident
+Palm Warbler,Setophaga palmarum,Passeriformes,Parulidae (New World Warblers),Non-resident
+Peregrine Falcon,Falco peregrinus,Falconiformes,Falconidae (Falcons and Caracaras),Resident
+Pied-billed Grebe,Podilymbus podiceps,Podicipediformes,Podicipedidae (Grebes),Non-resident
+Pileated Woodpecker,Dryocopus pileatus,Piciformes,Picidae (Woodpeckers),Resident
+Pine Grosbeak,Pinicola enucleator,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Non-resident
+Pine Siskin,Spinus pinus,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+Pine Warbler,Setophaga pinus,Passeriformes,Parulidae (New World Warblers),Non-resident
+Purple Finch,Haemorhous purpureus,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+Purple Sandpiper,Calidris maritima,Charadriiformes,Scolopacidae (Sandpipers and Allies),Non-resident
+Razorbill,Alca torda,Charadriiformes,"Alcidae (Auks, Murres, and Puffins)",Non-resident
+Red Crossbill,Loxia curvirostra,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+Red-bellied Woodpecker,Melanerpes carolinus,Piciformes,Picidae (Woodpeckers),Non-resident
+Red-breasted Merganser,Mergus serrator,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Red-breasted Nuthatch,Sitta canadensis,Passeriformes,Sittidae (Nuthatches),Resident
+Red-headed Woodpecker,Melanerpes erythrocephalus,Piciformes,Picidae (Woodpeckers),Non-resident
+Red-necked Grebe,Podiceps grisegena,Podicipediformes,Podicipedidae (Grebes),Non-resident
+Red-shouldered Hawk,Buteo lineatus,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Non-resident
+Red-tailed Hawk,Buteo jamaicensis,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Red-throated Loon,Gavia stellata,Gaviiformes,Gaviidae (Loons),Non-resident
+Red-winged Blackbird,Agelaius phoeniceus,Passeriformes,Icteridae (Troupials and Allies),Resident
+Redhead,Aythya americana,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Ring-billed Gull,Larus delawarensis,Charadriiformes,"Laridae (Gulls, Terns, and Skimmers)",Non-resident
+Ring-necked Duck,Aythya collaris,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Ring-necked Pheasant,Phasianus colchicus,Galliformes,"Phasianidae (Pheasants, Grouse, and Allies)",Non-resident
+Rock Pigeon,Columba livia,Columbiformes,Columbidae (Pigeons and Doves),Resident
+Rough-legged Hawk,Buteo lagopus,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Non-resident
+Ruby-crowned Kinglet,Corthylio calendula,Passeriformes,Regulidae (Kinglets),Non-resident
+Ruddy Duck,Oxyura jamaicensis,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Ruffed Grouse,Bonasa umbellus,Galliformes,"Phasianidae (Pheasants, Grouse, and Allies)",Resident
+Rusty Blackbird,Euphagus carolinus,Passeriformes,Icteridae (Troupials and Allies),Non-resident
+Sanderling,Calidris alba,Charadriiformes,Scolopacidae (Sandpipers and Allies),Non-resident
+Sharp-shinned Hawk,Accipiter striatus,Accipitriformes,"Accipitridae (Hawks, Eagles, and Kites)",Resident
+Short-eared Owl,Asio flammeus,Strigiformes,Strigidae (Owls),Non-resident
+Snow Bunting,Plectrophenax nivalis,Passeriformes,Calcariidae (Longspurs and Snow Buntings),Non-resident
+Snow Goose,Anser caerulescens,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Snowy Owl,Bubo scandiacus,Strigiformes,Strigidae (Owls),Non-resident
+Song Sparrow,Melospiza melodia,Passeriformes,Passerellidae (New World Sparrows),Resident
+Spruce Grouse,Canachites canadensis,Galliformes,"Phasianidae (Pheasants, Grouse, and Allies)",Resident
+Surf Scoter,Melanitta perspicillata,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Swamp Sparrow,Melospiza georgiana,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+Thick-billed Murre,Uria lomvia,Charadriiformes,"Alcidae (Auks, Murres, and Puffins)",Non-resident
+Townsend's Solitaire,Myadestes townsendi,Passeriformes,Turdidae (Thrushes and Allies),Non-resident
+Tufted Titmouse,Baeolophus bicolor,Passeriformes,"Paridae (Tits, Chickadees, and Titmice)",Resident
+Varied Thrush,Ixoreus naevius,Passeriformes,Turdidae (Thrushes and Allies),Non-resident
+Vesper Sparrow,Pooecetes gramineus,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+White-breasted Nuthatch,Sitta carolinensis,Passeriformes,Sittidae (Nuthatches),Resident
+White-crowned Sparrow,Zonotrichia leucophrys,Passeriformes,Passerellidae (New World Sparrows),Non-resident
+White-throated Sparrow,Zonotrichia albicollis,Passeriformes,Passerellidae (New World Sparrows),Resident
+White-winged Crossbill,Loxia leucoptera,Passeriformes,"Fringillidae (Finches, Euphonias, and Allies)",Resident
+White-winged Scoter,Melanitta deglandi,Anseriformes,"Anatidae (Ducks, Geese, and Waterfowl)",Non-resident
+Wild Turkey,Meleagris gallopavo,Galliformes,"Phasianidae (Pheasants, Grouse, and Allies)",Resident
+Wilson's Snipe,Gallinago delicata,Charadriiformes,Scolopacidae (Sandpipers and Allies),Non-resident
+Winter Wren,Troglodytes hiemalis,Passeriformes,Troglodytidae (Wrens),Non-resident
+Yellow-bellied Sapsucker,Sphyrapicus varius,Piciformes,Picidae (Woodpeckers),Non-resident
+Yellow-breasted Chat,Icteria virens,Passeriformes,Icteriidae (Yellow-breasted Chat),Non-resident
+Yellow-rumped Warbler,Setophaga coronata,Passeriformes,Parulidae (New World Warblers),Resident
