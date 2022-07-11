@@ -823,7 +823,7 @@ nonresident <- sp.tab %>%
 bind_rows(resident, nonresident) %>% 
   ggplot(aes(y = percent, x = change, fill = cat)) + 
   geom_bar(stat = "identity", position = "dodge", color = "black") +
-  geom_text(aes(label = round(percent, 1)), position = position_dodge(width= 0.9), 
+  geom_text(aes(label = round(percent, 1)), position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 3.5) +
   scale_fill_brewer(palette = "Paired") +
   labs(y = "Percentage (%)") +
