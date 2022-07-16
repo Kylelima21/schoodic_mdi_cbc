@@ -156,11 +156,11 @@ ggmap(base.map) +
         legend.key.size = unit(.4, "cm"),
         legend.key.width = unit(.9,"cm"),
         legend.title = element_blank(),
-        legend.text = element_text(family = "Helvetica", size = 10),
+        legend.text = element_text(family = "Helvetica", size = 9),
         legend.background = element_rect(fill = "white", color = "black"),
         panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
   scale_fill_manual("", values = c("#009900", "#CC9933", "#3A82CA", "darkorange"),
-                    label = c("Acadia National Park","Conserved lands", "MDI CBC circle", "Schoodic CBC circle")) #+
+                    label = c("Acadia National Park","Other conserved lands", "MDI CBC circle", "Schoodic CBC circle")) #+
   #ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
 
 ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28)
@@ -266,7 +266,7 @@ part <- eff %>%
   ggplot(aes(year, participants)) +
   geom_point(shape = 21, size = 1, color = "black") +
   #geom_line(color = "black", size = .5) +
-  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.6) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   theme_bw() +
   labs(y="Participants (n)", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,2), limits = c(10,80)) +
@@ -274,19 +274,20 @@ part <- eff %>%
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8, family = "Helvetica"),
         axis.title = element_text(color = "black", size = 8, family = "Helvetica"),
+        axis.ticks = element_line(color = "black", size = 0.2),
         strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 #Party hour plot
 hour <- eff %>% 
   ggplot(aes(year, partyhours)) +
   geom_point(shape = 21, size = 1, color = "black") +
   #geom_line(color = "black", size = .5) +
-  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.6) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   theme_bw() +
   labs(y="Party hours", x="Year") +
   #scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,2), limits = c(10,80)) +
@@ -294,12 +295,13 @@ hour <- eff %>%
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8),
         axis.title = element_text(color = "black", size = 8),
+        axis.ticks = element_line(color = "black", size = 0.2),
         strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 #Put the number of species with the cumulative species plot and save
 plot_grid(part, hour, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
@@ -366,12 +368,13 @@ cumul.sp <- T3.2 %>%
   scale_y_continuous(breaks = scales::pretty_breaks(n = 5), expand = c(0,0), limits = c(75,165)) +
   theme(axis.text = element_text(color = "black", size = 8),
         axis.title = element_text(color = "black", size = 8),
+        axis.ticks = element_line(color = "black", size = 0.2),
         #strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         #strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 
 
@@ -458,7 +461,7 @@ rm.out <- T2 %>%
 avg.sp <- T2 %>% 
   ggplot(aes(Year, NoSpecies)) +
   geom_point(shape = 21, size = 1, color = "black") +
-  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.6) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   theme_bw() +
   labs(y="Species/year", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
@@ -466,12 +469,13 @@ avg.sp <- T2 %>%
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8),
         axis.title = element_text(color = "black", size = 8),
+        axis.ticks = element_line(color = "black", size = 0.2),
         strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 #Put the number of species with the cumulative species plot and save
 plot_grid(avg.sp, cumul.sp, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
@@ -491,7 +495,7 @@ ggsave("outputs/regional/forpub/speciesnum_biplot_20220709.png", height = 2.4, w
 reg.1 <- T2 %>% 
   ggplot(aes(Year, Birds)) +
   geom_point(shape = 21, size = 1, color = "black") +
-  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.6) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   theme_bw() +
   labs(y="Total individual birds", x="Year") +
   scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,0), limits = c(1200,17000)) +
@@ -499,12 +503,13 @@ reg.1 <- T2 %>%
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8),
         axis.title = element_text(color = "black", size = 8),
+        axis.ticks = element_line(color = "black", size = 0.2),
         strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 #ggsave("outputs/regional/forpub/totalcount_year_regression.png", height = 5, width = 7)
 
@@ -521,7 +526,7 @@ reg.1 <- T2 %>%
 reg.2 <- T2 %>% 
   ggplot(aes(Year, BirdsPartyHour)) +
   geom_point(shape = 21, size = 1, color = "black") +
-  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.6) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   #geom_smooth(span = .75, color = "black") +
   theme_bw() +
   labs(y="Birds/party hour", x="Year") +
@@ -530,12 +535,13 @@ reg.2 <- T2 %>%
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8),
         axis.title = element_text(color = "black", size = 8),
+        axis.ticks = element_line(color = "black", size = 0.2),
         strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
         strip.background = element_rect(colour="black", fill="gray"),
         panel.background = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.grid.major = element_blank(),
-        panel.border = element_rect(color = 'black', fill = NA, size = 1))
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
 plot_grid(reg.1, reg.2, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
@@ -589,8 +595,8 @@ up <- as.vector(unique(T1$CommonName))
 # #end of loop
 
 
-library(grid)
-inc <- readPNG("outputs/regional/increase.png")
+# library(grid)
+# inc <- readPNG("outputs/regional/increase.png")
 
 
 
@@ -825,7 +831,7 @@ bind_rows(resident, nonresident) %>%
   geom_bar(stat = "identity", position = "dodge", color = "black") +
   geom_text(aes(label = round(percent, 1)), position = position_dodge(width = 0.9), 
             vjust = -0.5, size = 3.5) +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired", labels = c("Non-resident", "Resident")) +
   labs(y = "Percentage (%)") +
   theme_classic() +
   theme(axis.text = element_text(color = "black", size = 10),
@@ -833,9 +839,9 @@ bind_rows(resident, nonresident) %>%
         axis.title.x = element_blank(),
         legend.title = element_blank(),
         legend.text = element_text(color = "black", size = 9),
-        legend.position = c(0.16, 0.9))
+        legend.position = c(0.16, 0.9)) 
 
-ggsave("outputs/regional/forpub/res_nonres_20220609.png", height = 4, width = 5.28, units = "in")
+ggsave("outputs/regional/forpub/res_nonres_20220709.png", height = 3.7, width = 5, units = "in")
 
 
 #Plot raw numbers
