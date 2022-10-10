@@ -378,6 +378,17 @@ T1.1 %>%
   distinct(CommonName)
 
 
+##Average annual species first decade and last
+T1.1 %>% 
+  group_by(Year) %>% 
+  summarise(count = length(CommonName)) %>% 
+  filter(Year < 1981 | Year > 2011) %>% 
+  ungroup() %>% 
+  mutate(category = ifelse(Year < 1981, "first", "last")) %>% 
+  group_by(category) %>% 
+  summarise(mean.count = mean(count))
+
+
 
 #------------------------------------------------#
 
