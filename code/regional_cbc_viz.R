@@ -457,14 +457,16 @@ rm.out <- T2 %>%
 #                title = "Number of species by year",
 #                ylab = "No. of species",
 #                ggtheme = theme_classic())
+speciesdat <- T2 %>% 
+  mutate(spPartyHour = NoSpecies/PartyHours)
 
-avg.sp <- T2 %>% 
-  ggplot(aes(Year, NoSpecies)) +
+avg.sp <- speciesdat %>% 
+  ggplot(aes(Year, spPartyHour)) +
   geom_point(shape = 21, size = 1, color = "black") +
   geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
   theme_bw() +
-  labs(y="Species/year", x="Year") +
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
+  labs(y="Species/party hour", x="Year") +
+  #scale_y_continuous(breaks = scales::pretty_breaks(n = 10), expand = c(0,0), limits = c(50,90)) +
   theme(plot.title = element_text(hjust = 0.5), 
         legend.title = element_blank(),
         axis.text = element_text(color = "black", size = 8),
@@ -631,6 +633,127 @@ T1 %>%
 
 
 ggsave("outputs/regional/twelve_species_plot.png", height = 7.28, width = 5.28)
+
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "Common Eider") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se=F, color = "black", span = 1.5) +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/coei_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "White-winged Scoter") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", span = 1.5) +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/wwsc_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "American Black Duck") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", span = 1.5) +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/abdu_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "Long-tailed Duck") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", span = 1.5) +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/ltdu_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "Peregrine Falcon") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", method = "lm") +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/pefa_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "Bald Eagle") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", method = "lm") +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/baea_plot.png", height = 5, width = 4.5)
+
+T1 %>% 
+  select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
+  filter(species == "Wild Turkey") %>% 
+  ggplot(aes(year, countph)) +
+  geom_line(color = "gray60", size = 0.9) +
+  geom_smooth(se = F, color = "black", span = 0.5) +
+  labs(x = "Year", y = "Count/party hour") +
+  theme_bw() +
+  theme(strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = 9, family = "Helvetica"),
+        strip.background = element_rect(color = "black", size = 1),
+        panel.border = element_rect(color = "black", size = 1),
+        axis.title = element_text(color = "black", size = 14),
+        axis.text = element_text(color = "black", size = 12),
+        panel.grid.minor = element_blank())
+
+ggsave("outputs/witu_plot.png", height = 5, width = 4.5)
+
 
 
 

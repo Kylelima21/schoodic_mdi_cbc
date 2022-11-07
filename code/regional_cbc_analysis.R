@@ -189,16 +189,18 @@ T1.1 %>%
 #------------------------------------------------#
 
 ####Number of species by Year
+sptest <- T2 %>% 
+  mutate(spPartyHour = NoSpecies/PartyHours)
 
 #statistical tests for number of bird species
-cor(T2$Year, T2$NoSpecies, method="spearman")
-cor.test(T2$Year, T2$NoSpecies, method="spearman")
+cor(sptest$Year, sptest$spPartyHour, method="spearman")
+cor.test(sptest$Year, sptest$spPartyHour, method="spearman")
 #S = 31892, p-value = 0.001129**
 #rho = -0.44309
 
-m.NoSpecies <- lm(NoSpecies~Year, data=T2)
+m.NoSpecies <- lm(spPartyHour~Year, data=sptest)
 summary(m.NoSpecies) #Adjusted R-squared:  0.1543, F-statistic: 10.12 on 1 and 49 DF,  p-value: 0.002546**
-summary(T2$NoSpecies)
+summary(sptest$spPartyHour)
 #Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #52.00   68.00   70.00   70.94   75.00   84.00 
 
@@ -496,6 +498,26 @@ famstat <- sp.stats4 %>%
 
 #write.csv(famstat, "outputs/regional/forpub/familystats_table_20220526.csv", row.names = F)
 
+
+#------------------------------------------------#
+
+
+#### Rare species trends
+frare <- F1 %>% 
+  filter(Freq < 10)
+
+#Create species list
+sp <- unique(frare$CommonName) 
+
+rarepy <- T1.1 %>% 
+  filter(CommonName %in% sp) %>% 
+  select(common.name = CommonName, Year) %>% 
+  group_by(Year) %>% 
+  summarize(num.rare = length(Year)) %>% 
+  left_join(Y1, ., by = "Year") %>% 
+  mutate_if(is.integer, ~replace(., is.na(.), 0))
+
+cor.test(rarepy$Year, rarepy$num.rare, method="spearman")
 
 
 #------------------------------------------------#
