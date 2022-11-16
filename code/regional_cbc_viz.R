@@ -545,9 +545,12 @@ reg.2 <- T2 %>%
         panel.grid.major = element_blank(),
         panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
+ggsave("outputs/regional/forpub/regression_birdphour_20221114.png", height = 3, width = 4, dpi = 300)
+
+
 plot_grid(reg.1, reg.2, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
-ggsave("outputs/regional/forpub/regression_biplot_20220709.png", height = 2.4, width = 5.28)
+ggsave("outputs/regional/forpub/regression_biplot_20220709.png", height = 2.4, width = 5.28, dpi = 300)
 
 
 
@@ -952,8 +955,8 @@ nonresident <- sp.tab %>%
 bind_rows(resident, nonresident) %>% 
   ggplot(aes(y = percent, x = change, fill = cat)) + 
   geom_bar(stat = "identity", position = "dodge", color = "black") +
-  geom_text(aes(label = round(percent, 1)), position = position_dodge(width = 0.9), 
-            vjust = -0.5, size = 3.5) +
+  # geom_text(aes(label = round(percent, 1)), position = position_dodge(width = 0.9), 
+  #           vjust = -0.5, size = 3.5) +
   scale_fill_brewer(palette = "Paired", labels = c("Non-resident", "Resident")) +
   labs(y = "Percentage (%)") +
   theme_classic() +
@@ -964,7 +967,7 @@ bind_rows(resident, nonresident) %>%
         legend.text = element_text(color = "black", size = 9),
         legend.position = c(0.16, 0.9)) 
 
-ggsave("outputs/regional/forpub/res_nonres_20220709.png", height = 3.7, width = 5, units = "in")
+ggsave("outputs/regional/forpub/res_nonres_20221111.png", height = 3.7, width = 5, units = "in")
 
 
 #Plot raw numbers

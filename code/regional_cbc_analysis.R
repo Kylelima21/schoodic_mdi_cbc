@@ -162,6 +162,10 @@ T2 %>%
 T2 %>% 
   summarise(mean = mean(Birds), sd = sd(Birds))
 
+#Total count for study period
+T2 %>% 
+  summarise(sum = sum (Birds))
+
 
 #Mean count/party hour across all years
 T2 %>% 
@@ -518,6 +522,29 @@ rarepy <- T1.1 %>%
   mutate_if(is.integer, ~replace(., is.na(.), 0))
 
 cor.test(rarepy$Year, rarepy$num.rare, method="spearman")
+summary(lm(num.rare ~ Year, rarepy))
+
+rarepy %>% 
+  ggplot(aes(Year, num.rare)) +
+  geom_point(shape = 21, size = 1, color = "black") +
+  #geom_line(color = "black", size = .5) +
+  geom_smooth(method = "loess", color = "black", span = 1.5, size = 0.5) +
+  theme_bw() +
+  labs(y="Number of rare species", x="Year") +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 6), expand = c(0,2), limits = c(0,15)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+        legend.title = element_blank(),
+        axis.text = element_text(color = "black", size = 8, family = "Helvetica"),
+        axis.title = element_text(color = "black", size = 8, family = "Helvetica"),
+        axis.ticks = element_line(color = "black", size = 0.2),
+        strip.text.x = element_text(margin = margin(.2,0,.2,0, "cm"), color = "black", size = "12"), 
+        strip.background = element_rect(colour="black", fill="gray"),
+        panel.background = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
+
+ggsave("outputs/regional/forpub/rare_species_trend.png", height = 3, width = 4, dpi = 300)
 
 
 #------------------------------------------------#
