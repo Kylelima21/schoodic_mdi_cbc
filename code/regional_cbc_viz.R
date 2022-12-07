@@ -163,7 +163,7 @@ ggmap(base.map) +
                     label = c("Acadia National Park","Other conserved lands", "MDI CBC circle", "Schoodic CBC circle")) #+
   #ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
 
-ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28)
+ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28, dpi = 500)
 
 
 
@@ -306,7 +306,7 @@ hour <- eff %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(part, hour, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
-ggsave("outputs/regional/forpub/effort_biplot_20220709.png", height = 2.4, width = 5.28)
+ggsave("outputs/regional/forpub/effort_biplot_20220709.jpg", height = 2.4, width = 5.28, dpi = 500)
 
 
 
@@ -482,7 +482,7 @@ avg.sp <- speciesdat %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(avg.sp, cumul.sp, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
-ggsave("outputs/regional/forpub/speciesnum_biplot_20220709.png", height = 2.4, width = 5.28)
+ggsave("outputs/regional/forpub/speciesnum_biplot_20220709.jpg", height = 2.4, width = 5.28, dpi = 500)
 
 
 
@@ -545,7 +545,7 @@ reg.2 <- T2 %>%
         panel.grid.major = element_blank(),
         panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
-ggsave("outputs/regional/forpub/regression_birdphour_20221114.png", height = 3, width = 4, dpi = 300)
+ggsave("outputs/regional/forpub/regression_birdphour_20221114.jpg", height = 4.2, width = 5.28, dpi = 500)
 
 
 plot_grid(reg.1, reg.2, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
@@ -967,7 +967,7 @@ bind_rows(resident, nonresident) %>%
         legend.text = element_text(color = "black", size = 9),
         legend.position = c(0.16, 0.9)) 
 
-ggsave("outputs/regional/forpub/res_nonres_20221111.png", height = 3.7, width = 5, units = "in")
+ggsave("outputs/regional/forpub/res_nonres_20221111.jpg", height = 4, width = 5.28, units = "in", dpi = 500)
 
 
 #Plot raw numbers
