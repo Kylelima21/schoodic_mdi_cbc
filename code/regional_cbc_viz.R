@@ -166,6 +166,33 @@ ggmap(base.map) +
 ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28)
 
 
+#Simple map
+ggmap(base.map) +
+  geom_polygon(data = acad.bounds, aes(x = long, y = lat, group = group, fill = "#009900"),
+               color = "black", alpha = 0.5, size = 0.22) +
+  geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
+             shape = 21, size = 2.5, color = 'black') +
+  geom_path(data = buff1f, aes(x=long, y=lat), color = "#3A82CA") +
+  geom_path(data = buff2.0, aes(x=long, y=lat), color = "darkorange") +
+  theme_classic(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.795, 0.117),
+        legend.spacing.y = unit(0, "cm"),
+        legend.key.size = unit(.4, "cm"),
+        legend.key.width = unit(.9,"cm"),
+        legend.title = element_blank(),
+        legend.text = element_text(family = "Helvetica", size = 9),
+        legend.background = element_rect(fill = "white", color = "black"),
+        panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
+  scale_fill_manual("", values = c("#009900", "#3A82CA", "darkorange"),
+                    label = c("Acadia National Park", "MDI CBC circle", "Schoodic CBC circle")) #+
+#ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
+
+ggsave("outputs/regional/simple_study_area.png", height = 5.28, width = 5.28, dpi = 350)
+
 
 
 #------------------------------------------------#
