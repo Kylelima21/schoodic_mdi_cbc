@@ -2,3 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+
+.DS_Store
+outputs/.DS_Store
+outputs/regional/.DS_Store
+outputs/regional/forpub/.DS_Store
