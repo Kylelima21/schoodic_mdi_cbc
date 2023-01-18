@@ -161,10 +161,37 @@ ggmap(base.map) +
         panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
   scale_fill_manual("", values = c("#009900", "#CC9933", "#3A82CA", "darkorange"),
                     label = c("Acadia National Park","Other conserved lands", "MDI CBC circle", "Schoodic CBC circle")) #+
-  #ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
+#ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
 
-ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28, dpi = 500)
+ggsave("outputs/regional/forpub/cbc_study_area.png", height = 5.28, width = 5.28)
 
+
+#Simple map
+ggmap(base.map) +
+  geom_polygon(data = acad.bounds, aes(x = long, y = lat, group = group, fill = "#009900"),
+               color = "black", alpha = 0.5, size = 0.22) +
+  geom_point(data = circpoint, aes(longitude, latitude, fill = circle), 
+             shape = 21, size = 2.5, color = 'black') +
+  geom_path(data = buff1f, aes(x=long, y=lat), color = "#3A82CA") +
+  geom_path(data = buff2.0, aes(x=long, y=lat), color = "darkorange") +
+  theme_classic(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        legend.position = c(0.795, 0.117),
+        legend.spacing.y = unit(0, "cm"),
+        legend.key.size = unit(.4, "cm"),
+        legend.key.width = unit(.9,"cm"),
+        legend.title = element_blank(),
+        legend.text = element_text(family = "Helvetica", size = 9),
+        legend.background = element_rect(fill = "white", color = "black"),
+        panel.border = element_rect(color = 'black', size = 1.5, fill = NA)) +
+  scale_fill_manual("", values = c("#009900", "#3A82CA", "darkorange"),
+                    label = c("Acadia National Park", "MDI CBC circle", "Schoodic CBC circle")) #+
+#ggsn::scalebar(base.map, dist = 100, st.size=3, height=0.01, dd2km = TRUE, model = 'WGS84')
+
+ggsave("outputs/regional/simple_study_area.png", height = 5.28, width = 5.28, dpi = 350)
 
 
 
@@ -306,7 +333,7 @@ hour <- eff %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(part, hour, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
-ggsave("outputs/regional/forpub/effort_biplot_20220709.jpg", height = 2.4, width = 5.28, dpi = 500)
+ggsave("outputs/regional/forpub/effort_biplot_20220709.png", height = 2.4, width = 5.28)
 
 
 
@@ -482,7 +509,7 @@ avg.sp <- speciesdat %>%
 #Put the number of species with the cumulative species plot and save
 plot_grid(avg.sp, cumul.sp, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
 
-ggsave("outputs/regional/forpub/speciesnum_biplot_20220709.jpg", height = 2.4, width = 5.28, dpi = 500)
+ggsave("outputs/regional/forpub/speciesnum_biplot_20220709.png", height = 2.4, width = 5.28)
 
 
 
@@ -545,7 +572,7 @@ reg.2 <- T2 %>%
         panel.grid.major = element_blank(),
         panel.border = element_rect(color = 'black', fill = NA, size = 0.5))
 
-ggsave("outputs/regional/forpub/regression_birdphour_20221114.jpg", height = 4.2, width = 5.28, dpi = 500)
+ggsave("outputs/regional/forpub/regression_birdphour_20221114.png", height = 3, width = 4, dpi = 300)
 
 
 plot_grid(reg.1, reg.2, nrow=1, labels=c('a', 'b'), align = "h", label_size = 10)
@@ -610,9 +637,9 @@ up <- as.vector(unique(T1$CommonName))
 select.sp <- c("American Crow", "Harlequin Duck", "Northern Cardinal", "Wild Turkey",
                "American Tree Sparrow", "Blue Jay", "Boreal Chickadee", "Common Eider",
                "American Black Duck", "Dark-eyed Junco", "Herring Gull", "Red-breasted Nuthatch")
-  
 
-  
+
+
 T1 %>% 
   select(species = CommonName, year = Year, countph = CountPartyHour) %>% 
   filter(species %in% select.sp) %>% 
@@ -868,7 +895,7 @@ sp.table <- sp.tab %>%
   rename('Common name'=species, 'Count estimate'=count.est, 'Count p-value'=count.p,
          'Count/party hour estimate'=cph.est, 'Count/party hour p-value'=cph.p, 
          'Species trend'=change)
-  
+
 #Write
 #write.csv(sp.table, "outputs/regional/forpub/allspecies_trendtable.csv")
 
@@ -887,7 +914,7 @@ sp <- sp.table %>%
   mutate(`Common name` = case_when(`Common name` == "Ring-necked duck" ~ "Ring-necked Duck",
                                    `Common name` == "Gray Jay" ~ "Canada Jay",
                                    TRUE ~ `Common name`))
-                                   
+
 
 #Join for output
 tax.table <- left_join(sp, tax2, by = 'Common name') %>% 
@@ -949,7 +976,7 @@ nonresident <- sp.tab %>%
   mutate(percent = n/sum(n)*100,
          change = str_replace(change, "not enough data", "not analyzed"),
          cat = "nonresident") 
-  
+
 
 #Plot Percent
 bind_rows(resident, nonresident) %>% 
@@ -967,7 +994,7 @@ bind_rows(resident, nonresident) %>%
         legend.text = element_text(color = "black", size = 9),
         legend.position = c(0.16, 0.9)) 
 
-ggsave("outputs/regional/forpub/res_nonres_20221111.jpg", height = 4, width = 5.28, units = "in", dpi = 500)
+ggsave("outputs/regional/forpub/res_nonres_20221111.png", height = 3.7, width = 5, units = "in")
 
 
 #Plot raw numbers
