@@ -82,7 +82,7 @@ species_trend_gif <- function(species, trend) {
   
   
   ## Animate and save the gif
-  animate(a, width = 5.28, height = 3.75, unit = "in", res = 350)
+  animate(a, width = 5.28, height = 3.75, unit = "in", res = 350, end_pause = 30) 
   anim_save(paste0("outputs/trend_animations/", str_replace(tolower(species), "\\s", "_"), "_trend.gif"))
 
 }
