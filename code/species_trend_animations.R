@@ -104,6 +104,7 @@ species_trend_gif("Blue Jay", "decrease")
 species_trend_gif("American Crow", "increase")
 species_trend_gif("Dark-eyed Junco", "stable")
 species_trend_gif("Harlequin Duck", "increase")
+species_trend_gif("Red-breasted Nuthatch", "stable")
 
 
 
